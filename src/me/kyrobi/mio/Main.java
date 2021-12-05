@@ -1,5 +1,6 @@
 package me.kyrobi.mio;
 
+import me.kyrobi.mio.Auto.AnnouncementReaction;
 import me.kyrobi.mio.Auto.CountingMod;
 import me.kyrobi.mio.Commands.Debug;
 import net.dv8tion.jda.api.JDA;
@@ -90,5 +91,6 @@ public class Main {
         // Registers from class
         jda.addEventListener(new Debug());
         jda.addEventListener(new CountingMod());
+        jda.addEventListener(new AnnouncementReaction());
     }
 }

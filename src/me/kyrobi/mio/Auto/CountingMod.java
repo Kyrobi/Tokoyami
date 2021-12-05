@@ -1,5 +1,6 @@
 package me.kyrobi.mio.Auto;
 
+import me.kyrobi.mio.Main;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -10,7 +11,7 @@ public class CountingMod extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent e){
-        if(e.getChannel().getIdLong() == 799121727250235392L){
+        if(e.getChannel().getIdLong() == Main.countingChannelID){
             System.out.println("A message was sent in the counting channel");
 
             List<Message> messages = e.getChannel().getHistory().retrievePast(2).complete(); //Gets the last two message and store them to the list
