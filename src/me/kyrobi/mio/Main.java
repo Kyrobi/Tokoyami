@@ -37,7 +37,7 @@ public class Main {
 
         //Read in token from a file
         try{
-            tokenFile = Path.of("token.txt");
+            tokenFile = Path.of("data/token.txt");
             token = Files.readString(tokenFile);
             jda = JDABuilder.createDefault(token).enableIntents(GatewayIntent.GUILD_MESSAGES).build();
         }
@@ -54,7 +54,7 @@ public class Main {
         String config = null;
         Path configFile;
         try{
-            configFile = Path.of("config.json");
+            configFile = Path.of("data/config.json");
             config = Files.readString(configFile);
         }
 
@@ -66,7 +66,7 @@ public class Main {
                     "\n\"setWatchingMessage\":\"Movies\"" +
                     "\n}";
 
-            PrintWriter writer = new PrintWriter("config.json", "UTF-8");
+            PrintWriter writer = new PrintWriter("data/config.json", "UTF-8");
             writer.print(configFormat);
             writer.close();
 
