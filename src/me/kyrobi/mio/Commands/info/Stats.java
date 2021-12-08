@@ -11,6 +11,7 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 
 import static me.kyrobi.mio.Main.jda;
+import static me.kyrobi.mio.objects.SystemInfo.getSystemInformation;
 
 public class Stats extends ListenerAdapter {
 
@@ -53,13 +54,13 @@ public class Stats extends ListenerAdapter {
             eb.setColor(new Color(0xF40C0C));
             eb.setColor(new Color(255, 0, 54));
             // eb.setDescription("Text");
-            eb.addField("Name", "Mama Mio#4889", true);
+            eb.addField("Name", "Mio Mama#4889", true);
             eb.addField("Developer", "Kyrobi#9982", true);
             eb.addField("Servers", "`" + String.valueOf(serverCount) + "`", true);
             eb.addField("Command Prefix", "`m!`", true);
             eb.addField("Process Load", sysinfo.getProcessCPULoad() + "%", true);
             eb.addField("System Load", sysinfo.getSystemCPULoad() + "%", true);
-            // eb.addField("Memory", String.valueOf(sysinfo.getMemoryUsed()) + " MB / " + String.valueOf(sysinfo.getTotalPhysicalMemorySize()), true);
+            eb.addField("Memory", String.valueOf(getSystemInformation()), true);
             eb.addField("Uptime", uptime, true);
             eb.addField("", "", true);
             // eb.addBlankField(true);
