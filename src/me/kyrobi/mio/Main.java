@@ -1,7 +1,8 @@
 package me.kyrobi.mio;
 
 import me.kyrobi.mio.Auto.*;
-import me.kyrobi.mio.Commands.*;
+import me.kyrobi.mio.Commands.fun.*;
+import me.kyrobi.mio.Commands.info.*;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -25,6 +26,8 @@ public class Main {
 
     public static long countingChannelID;
     public static long announcementChannelID;
+
+    public static long beforeUsedMem=Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory();
 
 
     public static void main(String[] args) throws LoginException, IOException {
@@ -92,5 +95,7 @@ public class Main {
         jda.addEventListener(new CountingMod());
         jda.addEventListener(new AnnouncementReaction());
         jda.addEventListener(new Info());
+        jda.addEventListener(new Mitty());
+        jda.addEventListener(new Stats());
     }
 }

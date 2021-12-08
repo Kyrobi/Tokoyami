@@ -1,4 +1,4 @@
-package me.kyrobi.mio.Commands;
+package me.kyrobi.mio.Commands.info;
 
 import me.kyrobi.mio.Main;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -20,7 +20,7 @@ public class Info extends ListenerAdapter {
             String help_message = null;
             // Read the info message from a txt file
             try {
-                FileReader reader = new FileReader("Data/info.txt");
+                FileReader reader = new FileReader("data/info.txt");
 
                 // The reader returns an int value representing each character in the file. Returns -1 when end of file
                 int data = reader.read();

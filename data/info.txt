@@ -6,6 +6,8 @@
 **Fun: **
 `igay` | `mitty` | `lol`
 
+**Misc: **
+`mitty`
 
 View command description and other info:
 <https://telegra.ph/Commands-12-07-2>
