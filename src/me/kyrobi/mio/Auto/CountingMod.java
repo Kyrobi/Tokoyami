@@ -35,14 +35,14 @@ public class CountingMod extends ListenerAdapter {
             }
 
             catch(NumberFormatException error){
-                System.out.println("Deleted " + e.getMessage().getContentRaw() + " from counting" + " sent by " + e.getMember().getNickname() + " | " + e.getMember() + "\n");
+                System.out.println("Deleted " + e.getMessage().getContentRaw() + " from #counting" + " sent by " + e.getMember().getNickname() + " | " + e.getMember() + "\n");
                 e.getMessage().delete().queue(); //Assume that if it can't convert, the message isn't right because it's not an int in the first place
                 return;
             }
 
             expectedValue = previous + 1;
             if(expectedValue != sent){
-                System.out.println("Deleted " + e.getMessage().getContentRaw() + " from counting" + " sent by " + e.getMember().getNickname() + " | " + e.getMember());
+                System.out.println("Deleted " + e.getMessage().getContentRaw() + " from #counting" + " sent by " + e.getMember().getNickname() + " | " + e.getMember());
                 System.out.println("Previous: " + previous + ". Expecting: " + expectedValue + ". But user sent " + sent + "\n");
                 e.getMessage().delete().queue();
             }

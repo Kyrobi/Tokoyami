@@ -1,8 +1,7 @@
 package me.kyrobi.mio;
 
-import me.kyrobi.mio.Auto.AnnouncementReaction;
-import me.kyrobi.mio.Auto.CountingMod;
-import me.kyrobi.mio.Commands.Debug;
+import me.kyrobi.mio.Auto.*;
+import me.kyrobi.mio.Commands.*;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -22,7 +21,7 @@ import static java.lang.System.exit;
 public class Main {
 
     public static JDA jda;
-    public static String prefix = ">";
+    public static String prefix = "m!";
 
     public static long countingChannelID;
     public static long announcementChannelID;
@@ -92,5 +91,6 @@ public class Main {
         jda.addEventListener(new Debug());
         jda.addEventListener(new CountingMod());
         jda.addEventListener(new AnnouncementReaction());
+        jda.addEventListener(new Info());
     }
 }

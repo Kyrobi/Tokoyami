@@ -1,0 +1,11 @@
+**Bot Prefix:** `m!`
+
+**General infomation: **
+`stats` | `ping` | `info`
+
+**Fun: **
+`igay` | `mitty` | `lol`
+
+
+View command description and other info:
+<https://telegra.ph/Commands-12-07-2>
