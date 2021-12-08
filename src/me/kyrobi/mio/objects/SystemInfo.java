@@ -10,16 +10,10 @@ https://stackoverflow.com/questions/26676947/get-real-ram-usage-of-current-jvm-w
 import com.sun.management.OperatingSystemMXBean;
 import org.apache.commons.math3.util.Precision;
 
-import javax.management.*;
-import java.io.File;
 import java.lang.management.ManagementFactory;
-import java.net.UnknownHostException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
 import java.util.Locale;
-
-import static me.kyrobi.mio.Main.beforeUsedMem;
 
 public class SystemInfo {
 
@@ -28,13 +22,13 @@ public class SystemInfo {
 
     private static final long MEGABYTE_FACTOR = 1024L * 1024L;
     private static final DecimalFormat ROUNDED_DOUBLE_DECIMALFORMAT;
-    private static final String MIB = "MiB";
+    private static final String MIB = "MB";
 
     static {
         DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.ENGLISH);
         otherSymbols.setDecimalSeparator('.');
         otherSymbols.setGroupingSeparator(',');
-        ROUNDED_DOUBLE_DECIMALFORMAT = new DecimalFormat("####0.00", otherSymbols);
+        ROUNDED_DOUBLE_DECIMALFORMAT = new DecimalFormat("####0.0", otherSymbols);
         ROUNDED_DOUBLE_DECIMALFORMAT.setGroupingUsed(false);
     }
 
@@ -91,10 +85,16 @@ public class SystemInfo {
     }
 
     public static String getSystemInformation() {
-        return String.format("Heap: %s\n Used: %s\n Free: %s\n Max Heap: %s\n Used: %s",
+//        return String.format("Heap: %s\n Used: %s\n Free: %s\n Max Heap: %s\n Used: %s",
+//                getTotalMemoryInMiB(),
+//                getUsedMemoryInMiB(),
+//                getFreeMemoryInMiB(),
+//                getMaxMemoryInMiB(),
+//                getPercentageUsedFormatted());
+
+        return String.format("Heap: %s\n Used: %s\n Max Heap: %s\n Used: %s",
                 getTotalMemoryInMiB(),
                 getUsedMemoryInMiB(),
-                getFreeMemoryInMiB(),
                 getMaxMemoryInMiB(),
                 getPercentageUsedFormatted());
     }
@@ -168,7 +168,5 @@ public class SystemInfo {
     public long usedMem() {
         return Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
     }
-
-
 
 }
