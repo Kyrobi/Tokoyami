@@ -37,7 +37,7 @@ public class Main {
 
         //Read in token from a file
         try{
-            tokenFile = Path.of("data/token.txt");
+            tokenFile = Path.of("token.txt");
             token = Files.readString(tokenFile);
             jda = JDABuilder.createDefault(token).enableIntents(GatewayIntent.GUILD_MESSAGES).build();
         }
