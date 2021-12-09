@@ -41,7 +41,7 @@ public class Main {
         try{
             tokenFile = Path.of("token.txt");
             token = Files.readString(tokenFile);
-            jda = JDABuilder.createDefault(token).enableIntents(GatewayIntent.GUILD_MESSAGES).build();
+            jda = JDABuilder.createDefault(token).enableIntents(GatewayIntent.GUILD_MESSAGES, GatewayIntent.DIRECT_MESSAGES, GatewayIntent.GUILD_PRESENCES).build();
         }
         catch (IOException | IllegalArgumentException e){
             System.out.println("Cannot open token file! Making a new one. Please configure it");
