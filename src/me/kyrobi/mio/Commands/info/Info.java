@@ -47,7 +47,7 @@ public class Info extends ListenerAdapter {
 
         if((args[0].equalsIgnoreCase(Main.prefix + "info")) || (args[0].equalsIgnoreCase(Main.prefix + "help"))){
             String help_message = constructInfoMessage();
-            
+
             ev.getChannel().sendMessage(help_message).queue();
         }
     }

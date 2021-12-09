@@ -26,8 +26,7 @@ public class Main {
 
     public static long countingChannelID;
     public static long announcementChannelID;
-
-    public static long beforeUsedMem=Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory();
+    public static long gayLordRoleID;
 
 
     public static void main(String[] args) throws LoginException, IOException {
@@ -65,7 +64,8 @@ public class Main {
             System.out.println("Config file does not exist! Creating a new one. Please configure it");
             String configFormat = "{\n\"countingChannelID\":1234567890," +
                     "\n\"announcementChannelID\":1234567890," +
-                    "\n\"setWatchingMessage\":\"Movies\"" +
+                    "\n\"setWatchingMessage\":\"m!help | FAMS\"," +
+                    "\n\"gayLordRoleID\":918397641971367977" +
                     "\n}";
 
             PrintWriter writer = new PrintWriter("data/config.json", "UTF-8");
@@ -82,6 +82,7 @@ public class Main {
         countingChannelID = (Long) jsonObject.get("countingChannelID");
         announcementChannelID = (Long) jsonObject.get("announcementChannelID");
         watchingStatus = (String) jsonObject.get("setWatchingMessage");
+        gayLordRoleID = (Long) jsonObject.get("gayLordRoleID");
 
         System.out.println("countingChannel: "+countingChannelID);
         System.out.println("announcementChannel: "+announcementChannelID);
@@ -97,5 +98,7 @@ public class Main {
         jda.addEventListener(new Info());
         jda.addEventListener(new Mitty());
         jda.addEventListener(new Stats());
+        jda.addEventListener(new Ping());
+        jda.addEventListener(new Igay());
     }
 }
