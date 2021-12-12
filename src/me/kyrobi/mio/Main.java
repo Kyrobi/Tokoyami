@@ -100,5 +100,6 @@ public class Main {
         jda.addEventListener(new Stats());
         jda.addEventListener(new Ping());
         jda.addEventListener(new Igay());
+        jda.addEventListener(new CountingInfo());
     }
 }
