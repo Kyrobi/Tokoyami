@@ -1,6 +1,7 @@
 package me.kyrobi.mio.Commands.info;
 
 import me.kyrobi.mio.Main;
+import me.kyrobi.mio.objects.SystemInfo;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
@@ -8,6 +9,8 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.io.*;
 import java.util.Scanner;
+
+import javax.sound.sampled.SourceDataLine;
 
 public class Info extends ListenerAdapter {
 

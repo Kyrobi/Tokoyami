@@ -26,6 +26,7 @@ public class Main {
 
     public static long countingChannelID;
     public static long announcementChannelID;
+    public static long ChangelogChannelID;
     public static long gayLordRoleID;
 
 
@@ -81,11 +82,13 @@ public class Main {
         //Set the variables by reading from the json file
         countingChannelID = (Long) jsonObject.get("countingChannelID");
         announcementChannelID = (Long) jsonObject.get("announcementChannelID");
+        ChangelogChannelID = (Long) jsonObject.get("ChangelogChannelID");
         watchingStatus = (String) jsonObject.get("setWatchingMessage");
         gayLordRoleID = (Long) jsonObject.get("gayLordRoleID");
 
         System.out.println("countingChannel: "+countingChannelID);
         System.out.println("announcementChannel: "+announcementChannelID);
+        System.out.println("ChangelogChannel: "+ChangelogChannelID);
         System.out.println("setWatchingMessage: "+watchingStatus);
 
         jda.getPresence().setActivity(Activity.watching(watchingStatus));
@@ -95,6 +98,7 @@ public class Main {
         jda.addEventListener(new Debug());
         jda.addEventListener(new CountingMod());
         jda.addEventListener(new AnnouncementReaction());
+        jda.addEventListener(new ChangelogReaction());
         jda.addEventListener(new Info());
         jda.addEventListener(new Mitty());
         jda.addEventListener(new Stats());
