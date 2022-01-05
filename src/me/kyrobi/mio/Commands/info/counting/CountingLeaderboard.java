@@ -33,6 +33,9 @@ public class CountingLeaderboard extends ListenerAdapter {
             EmbedBuilder eb = new EmbedBuilder();
             eb.setTitle("Counting Leaderboard", null);
 
+            int maxAmount = 20;
+            int count = 0;
+            int ranking = 1;
             try{
                 Connection conn = DriverManager.getConnection(url); // Make connection
                 Statement stmt = conn.createStatement();
@@ -40,12 +43,14 @@ public class CountingLeaderboard extends ListenerAdapter {
 
 
                 //We loop through the database. If the userID matches, we break out of the loop
-                while(rs.next()){
+                while(rs.next() && (count < maxAmount)){
                     long userId = rs.getLong("userId");
 
                     //When we loop, we append to a massive string that will be used later
-                    stringBuilder1.append("\n" + (toUser(rs.getLong("userId"))).getAsMention());
+                    stringBuilder1.append("\n" + ranking++ + ". "+ (toUser(rs.getLong("userId"))).getAsMention());
                     stringBuilder2.append("\n" + rs.getInt("amount"));
+                    count++;
+                    //System.out.println("Count is: " + count);
                 }
                 rs.close();
                 conn.close();
