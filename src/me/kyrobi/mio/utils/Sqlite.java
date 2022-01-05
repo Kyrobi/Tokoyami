@@ -9,6 +9,7 @@ public class Sqlite {
     File dbfile = new File(".");
     String url = "jdbc:sqlite:" + dbfile.getAbsolutePath() + "\\counting.db";
 
+    // This function will create a new database if one doesn't exist
     public void createNewTable(){
         String sql = "CREATE TABLE IF NOT EXISTS 'stats' ("
                 + " 'userId' TEXT PRIMARY KEY,"
@@ -28,6 +29,7 @@ public class Sqlite {
         System.out.println("Database does not exist. Creating a new one!");
     }
 
+    //Insert a new value into the database
     public void insert(String id, int amount){
 
         String sqlcommand = "INSERT INTO stats(userId, amount) VALUES(?,?)";
@@ -44,21 +46,26 @@ public class Sqlite {
         }
     }
 
-//    public void update(String id, int amount){
-//
-//        String checkIfExist = "SELECT EXISTS(SELECT 1 FROM stats WHERE userId=?)";
-//
-//        try{
-//            Connection conn = DriverManager.getConnection(url);
-//            Statement stmt = conn.prepareStatement(checkIfExist);
-//
-//        }
-//        if(){
-//
-//        }
-//
-//
-//    }
+    //Updates an existing value in the database
+    public void update(String userId, int amount){
+
+        //Update the data specified by the userId
+        String updateCommand = "UPDATE stats SET amount=" +amount + " WHERE userId=" + "'" + userId + "'";
+
+        System.out.println("Update command: " + updateCommand);
+
+        try{
+            Connection conn = DriverManager.getConnection(url);
+            PreparedStatement stmt = conn.prepareStatement(updateCommand);
+            stmt.executeUpdate();
+
+        }
+        catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+
+
+    }
 
     public int getCount(String Id){
         //String checkIfExist = "SELECT EXISTS(SELECT 1 FROM stats WHERE userId='" + test + "' collate nocase)";

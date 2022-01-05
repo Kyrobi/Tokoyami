@@ -122,6 +122,7 @@ public class Main {
         //sqlite.insert("myNuts", 69);
         //sqlite.insert("ourNuts", 434553);
         //sqlite.insert("ourBalls", 24533);
-        sqlite.getCount("myBallsss");
+        //sqlite.getCount("myBallsss");
+        sqlite.update("ourNuts", 8745);
     }
 }
