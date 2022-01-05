@@ -31,7 +31,7 @@ public class CountingLeaderboard extends ListenerAdapter {
             StringBuilder stringBuilder1 = new StringBuilder();
             StringBuilder stringBuilder2 = new StringBuilder();
             EmbedBuilder eb = new EmbedBuilder();
-            eb.setTitle("Counting Leaderboard", null);
+            //eb.setTitle("Counting Leaderboard", null);
 
             int maxAmount = 20;
             int count = 0;
@@ -62,7 +62,7 @@ public class CountingLeaderboard extends ListenerAdapter {
             }
 
             //We take the final string and post it into the field
-            eb.addField("", stringBuilder1.toString(), true);
+            eb.addField("Counting leaderboard", stringBuilder1.toString(), true);
             //eb.addField("Amount", stringBuilder2.toString(), true);
 
             e.getChannel().sendMessageEmbeds(eb.build()).queue();
