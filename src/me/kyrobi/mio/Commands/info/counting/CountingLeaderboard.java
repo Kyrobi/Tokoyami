@@ -47,6 +47,8 @@ public class CountingLeaderboard extends ListenerAdapter {
                     stringBuilder1.append("\n" + (toUser(rs.getLong("userId"))).getAsMention());
                     stringBuilder2.append("\n" + rs.getInt("amount"));
                 }
+                rs.close();
+                conn.close();
             }
             catch(SQLException ev){
                 ev.printStackTrace();
