@@ -6,8 +6,11 @@ import java.util.Objects;
 
 public class Sqlite {
 
-    File dbfile = new File(".");
-    String url = "jdbc:sqlite:" + dbfile.getAbsolutePath() + "\\counting.db";
+    File dbfile = new File("");
+    //String url = "jdbc:sqlite:" + dbfile.getAbsolutePath() + "/counting.db";
+
+    String url = "jdbc:sqlite:" + dbfile.getAbsolutePath() + "/counting.db"; // For linux to work
+    //String url = "jdbc:sqlite:/home/kyrobi/Bot/Mio/counting.db";
 
     // This function will create a new database if one doesn't exist
     public void createNewTable(){
@@ -18,11 +21,12 @@ public class Sqlite {
         // the PRIMARY KEY uniquely defines a record
 
         try{
+            Class.forName("org.sqlite.JDBC");
             Connection conn = DriverManager.getConnection(url); //Tries to open the connection
             Statement stmt = conn.createStatement(); // Formulate the command to execute
             stmt.execute(sql);  //Execute said command
         }
-        catch (SQLException error){
+        catch (SQLException | ClassNotFoundException error){
             System.out.println(error.getMessage());
         }
 
@@ -35,6 +39,7 @@ public class Sqlite {
         String sqlcommand = "INSERT INTO stats(userId, amount) VALUES(?,?)";
 
         try{
+            Class.forName("org.sqlite.JDBC");
             Connection conn = DriverManager.getConnection(url);
             PreparedStatement stmt = conn.prepareStatement(sqlcommand);
             stmt.setLong(1, id); // The first column will contain the ID
@@ -42,7 +47,7 @@ public class Sqlite {
             stmt.executeUpdate();
             conn.close();
         }
-        catch(SQLException error){
+        catch(SQLException | ClassNotFoundException error){
             System.out.println(error.getMessage());
         }
     }
@@ -56,13 +61,14 @@ public class Sqlite {
         //System.out.println("Update command: " + updateCommand);
 
         try{
+            Class.forName("org.sqlite.JDBC");
             Connection conn = DriverManager.getConnection(url);
             PreparedStatement stmt = conn.prepareStatement(updateCommand);
             stmt.executeUpdate();
             conn.close();
 
         }
-        catch(SQLException e){
+        catch(SQLException | ClassNotFoundException e){
             System.out.println(e.getMessage());
         }
 
@@ -78,6 +84,7 @@ public class Sqlite {
 
         try{
             //System.out.println("Connecting...");
+            Class.forName("org.sqlite.JDBC");
             Connection conn = DriverManager.getConnection(url); // Make connection
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(selectfrom); // Execute the command
@@ -96,7 +103,7 @@ public class Sqlite {
 
             //System.out.println("Count: " + count);
         }
-        catch(SQLException e){
+        catch(SQLException | ClassNotFoundException e){
             e.printStackTrace();
             System.out.println("Error code: " + e.getMessage());
         }
@@ -109,6 +116,7 @@ public class Sqlite {
 
         try {
             //System.out.println("Connecting...");
+            Class.forName("org.sqlite.JDBC");
             Connection conn = DriverManager.getConnection(url); // Make connection
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(selectfrom); // Execute the command
@@ -116,7 +124,7 @@ public class Sqlite {
             rs.close();
             conn.close();
         }
-        catch(SQLException se){
+        catch(SQLException | ClassNotFoundException se){
             System.out.println(se.getMessage());
         }
 
