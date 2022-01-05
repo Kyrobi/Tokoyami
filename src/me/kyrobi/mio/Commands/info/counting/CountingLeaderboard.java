@@ -47,8 +47,9 @@ public class CountingLeaderboard extends ListenerAdapter {
                     long userId = rs.getLong("userId");
 
                     //When we loop, we append to a massive string that will be used later
-                    stringBuilder1.append("\n" + ranking++ + ". "+ (toUser(rs.getLong("userId"))).getAsMention());
-                    stringBuilder2.append("\n" + rs.getInt("amount"));
+                    stringBuilder1.append("\n`#" + ranking++ + "` **" + rs.getInt("amount") + "** - " + (toUser(rs.getLong("userId"))).getAsMention());
+                    //stringBuilder1.append("\n" + ranking++ + ". "+ (toUser(rs.getLong("userId"))).getAsMention());
+                    //stringBuilder2.append("\n" + rs.getInt("amount"));
                     count++;
                     //System.out.println("Count is: " + count);
                 }
@@ -61,8 +62,8 @@ public class CountingLeaderboard extends ListenerAdapter {
             }
 
             //We take the final string and post it into the field
-            eb.addField("Name", stringBuilder1.toString(), true);
-            eb.addField("Amount", stringBuilder2.toString(), true);
+            eb.addField("", stringBuilder1.toString(), true);
+            //eb.addField("Amount", stringBuilder2.toString(), true);
 
             e.getChannel().sendMessageEmbeds(eb.build()).queue();
         }
