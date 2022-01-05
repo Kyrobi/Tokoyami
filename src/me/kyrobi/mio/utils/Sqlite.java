@@ -12,7 +12,7 @@ public class Sqlite {
     // This function will create a new database if one doesn't exist
     public void createNewTable(){
         String sql = "CREATE TABLE IF NOT EXISTS 'stats' ("
-                + " 'userId' TEXT PRIMARY KEY,"
+                + " 'userId' integer PRIMARY KEY,"
                 + " 'amount' integer NOT NULL DEFAULT 0)";
 
         // the PRIMARY KEY uniquely defines a record
@@ -30,16 +30,17 @@ public class Sqlite {
     }
 
     //Insert a new value into the database
-    public void insert(String id, int amount){
+    public void insert(long id, int amount){
 
         String sqlcommand = "INSERT INTO stats(userId, amount) VALUES(?,?)";
 
         try{
             Connection conn = DriverManager.getConnection(url);
             PreparedStatement stmt = conn.prepareStatement(sqlcommand);
-            stmt.setString(1, id); // The first column will contain the ID
+            stmt.setLong(1, id); // The first column will contain the ID
             stmt.setInt(2, amount); // The second column will contain the amount
             stmt.executeUpdate();
+            conn.close();
         }
         catch(SQLException error){
             System.out.println(error.getMessage());
@@ -47,17 +48,18 @@ public class Sqlite {
     }
 
     //Updates an existing value in the database
-    public void update(String userId, int amount){
+    public void update(long userId, int amount){
 
         //Update the data specified by the userId
         String updateCommand = "UPDATE stats SET amount=" +amount + " WHERE userId=" + "'" + userId + "'";
 
-        System.out.println("Update command: " + updateCommand);
+        //System.out.println("Update command: " + updateCommand);
 
         try{
             Connection conn = DriverManager.getConnection(url);
             PreparedStatement stmt = conn.prepareStatement(updateCommand);
             stmt.executeUpdate();
+            conn.close();
 
         }
         catch(SQLException e){
@@ -67,24 +69,27 @@ public class Sqlite {
 
     }
 
-    public int getCount(String Id){
+    public int getCount(long Id){
         //String checkIfExist = "SELECT EXISTS(SELECT 1 FROM stats WHERE userId='" + test + "' collate nocase)";
 
         // String to get all the values from the database
         String selectfrom = "SELECT * FROM stats";
+        int count = 0;
 
         try{
-            System.out.println("Connecting...");
+            //System.out.println("Connecting...");
             Connection conn = DriverManager.getConnection(url); // Make connection
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(selectfrom); // Execute the command
 
-            int count = 0;
 
             //We loop through the database. If the userID matches, we break out of the loop
             while(rs.next()){
-                System.out.println("ID: " + rs.getString("userId") + " Amount: " + rs.getInt("amount"));
-                if(Objects.equals(rs.getString("userId"), Id)){
+                //System.out.println("ID: " + rs.getString("userId") + " Amount: " + rs.getInt("amount"));
+                if(Objects.equals(rs.getLong("userId"), Id)){
+                    ++count;
+                    rs.close();
+                    conn.close();
                     break; // Breaks out of the loop once the value has been found. No need to loop through the rest of the database
                 }
             }
@@ -95,6 +100,26 @@ public class Sqlite {
             e.printStackTrace();
             System.out.println("Error code: " + e.getMessage());
         }
-        return 0;
+        return count;
+    }
+
+    public int getAmount(long userId){
+        String selectfrom = "SELECT * FROM stats WHERE userId=" + userId;
+        int amount = 0;
+
+        try {
+            //System.out.println("Connecting...");
+            Connection conn = DriverManager.getConnection(url); // Make connection
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(selectfrom); // Execute the command
+            amount = rs.getInt("amount");
+            rs.close();
+            conn.close();
+        }
+        catch(SQLException se){
+            System.out.println(se.getMessage());
+        }
+
+        return amount;
     }
 }

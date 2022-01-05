@@ -1,6 +1,7 @@
 package me.kyrobi.mio.Auto;
 
 import me.kyrobi.mio.Main;
+import me.kyrobi.mio.utils.Sqlite;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
@@ -83,6 +84,20 @@ public class CountingMod extends ListenerAdapter {
                 // putting data to JSONObject
                 // Call put more if add multiple values
                 jo.put("countingProgress", previous);
+
+                //SQLite stuff
+                Sqlite sqlite = new Sqlite();
+
+                //If the user is not in the database, we add them to it
+                if(sqlite.getCount(e.getAuthor().getIdLong()) == 0){
+                    System.out.println("Creating new profile for user");
+                    sqlite.insert(e.getAuthor().getIdLong(), 1);
+                }
+                //If user already exists, increment their data
+                else{
+                    int currentAmount = sqlite.getAmount(e.getAuthor().getIdLong());
+                    sqlite.update(e.getAuthor().getIdLong(), ++currentAmount);
+                }
 
                 //Write into the file
                 try (FileWriter file = new FileWriter("data/counting.json"))

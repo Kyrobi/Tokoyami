@@ -3,6 +3,9 @@ package me.kyrobi.mio;
 import me.kyrobi.mio.Auto.*;
 import me.kyrobi.mio.Commands.fun.*;
 import me.kyrobi.mio.Commands.info.*;
+import me.kyrobi.mio.Commands.info.counting.CountingInfo;
+import me.kyrobi.mio.Commands.info.counting.CountingLeaderboard;
+import me.kyrobi.mio.Commands.info.counting.CountingStats;
 import me.kyrobi.mio.utils.Sqlite;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -108,6 +111,8 @@ public class Main {
         jda.addEventListener(new Ping());
         jda.addEventListener(new Igay());
         jda.addEventListener(new CountingInfo());
+        jda.addEventListener(new CountingStats());
+        jda.addEventListener(new CountingLeaderboard());
 
         Sqlite sqlite = new Sqlite();
 
@@ -117,12 +122,11 @@ public class Main {
         if(!exists){
             sqlite.createNewTable();
         }
-        System.out.println("bruh");
-        //sqlite.insert("myBalls", 49875);
-        //sqlite.insert("myNuts", 69);
-        //sqlite.insert("ourNuts", 434553);
-        //sqlite.insert("ourBalls", 24533);
+//        sqlite.insert(1, 49875);
+//        sqlite.insert(2, 69);
+//        sqlite.insert(3, 434553);
+//        sqlite.insert(4, 24533);
         //sqlite.getCount("myBallsss");
-        sqlite.update("ourNuts", 8745);
+        //sqlite.update("ourNuts", 8745);
     }
 }

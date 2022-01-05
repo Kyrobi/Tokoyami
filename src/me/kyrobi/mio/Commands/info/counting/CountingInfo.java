@@ -1,6 +1,7 @@
-package me.kyrobi.mio.Commands.info;
+package me.kyrobi.mio.Commands.info.counting;
 
 import me.kyrobi.mio.Main;
+import me.kyrobi.mio.utils.Sqlite;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.json.simple.JSONObject;
