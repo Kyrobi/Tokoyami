@@ -24,8 +24,8 @@ public class CountingLeaderboard extends ListenerAdapter {
 
         if((args[0].equalsIgnoreCase(Main.prefix + "counting") && args[1].equalsIgnoreCase( "leaderboard"))){
 
-            File dbfile = new File(".");
-            String url = "jdbc:sqlite:" + dbfile.getAbsolutePath() + "\\counting.db";
+            File dbfile = new File("");
+            String url = "jdbc:sqlite:" + dbfile.getAbsolutePath() + "/counting.db";
             String selectDescOrder = "SELECT * FROM `stats` ORDER BY `amount` DESC";
 
             StringBuilder stringBuilder1 = new StringBuilder();
