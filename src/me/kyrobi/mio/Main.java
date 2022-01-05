@@ -3,6 +3,7 @@ package me.kyrobi.mio;
 import me.kyrobi.mio.Auto.*;
 import me.kyrobi.mio.Commands.fun.*;
 import me.kyrobi.mio.Commands.info.*;
+import me.kyrobi.mio.utils.Sqlite;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -12,6 +13,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 import javax.security.auth.login.LoginException;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
@@ -94,6 +96,7 @@ public class Main {
         jda.getPresence().setActivity(Activity.watching(watchingStatus));
         jda.getPresence().setStatus(OnlineStatus.ONLINE);
 
+
         // Registers from class
         jda.addEventListener(new Debug());
         jda.addEventListener(new CountingMod());
@@ -105,5 +108,20 @@ public class Main {
         jda.addEventListener(new Ping());
         jda.addEventListener(new Igay());
         jda.addEventListener(new CountingInfo());
+
+        Sqlite sqlite = new Sqlite();
+
+        // See if a database exists already. If not, create a new one
+        File tempFile = new File("counting.db");
+        boolean exists = tempFile.exists();
+        if(!exists){
+            sqlite.createNewTable();
+        }
+        System.out.println("bruh");
+        //sqlite.insert("myBalls", 49875);
+        //sqlite.insert("myNuts", 69);
+        //sqlite.insert("ourNuts", 434553);
+        //sqlite.insert("ourBalls", 24533);
+        sqlite.getCount("myBallsss");
     }
 }

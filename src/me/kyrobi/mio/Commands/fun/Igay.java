@@ -27,7 +27,7 @@ public class Igay extends ListenerAdapter {
 //
 //            while(gayPercentage != 10000){
 //                gayPercentageLoop++;
-//                gayPercentage = r.nextInt(10000) + 1;
+//                gayPercentage = Math.floor(r.nextInt(10000) + 1);
 //            }
 //            System.out.println("It took " + gayPercentageLoop + " tries to get the gaylord rank");
 
@@ -69,7 +69,7 @@ public class Igay extends ListenerAdapter {
                 e.getGuild().addRoleToMember(e.getMember(), e.getGuild().getRoleById(gayLordRoleID)).queue();
                 gayPercentage = 100;
             }
-            e.getChannel().sendMessage(e.getMember().getAsMention() + " is " + (String.format("%.0f", gayPercentage)) + "% gay. This means they are " + gayRatingMessage).queue();
+            e.getChannel().sendMessage(e.getMember().getAsMention() + " is " + (String.format("%.0f", Math.floor(gayPercentage))) + "% gay. This means they are " + gayRatingMessage).queue();
         }
     }
 }
