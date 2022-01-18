@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.RestAction;
 
@@ -26,14 +27,12 @@ public class CountingLeaderboard extends ListenerAdapter {
 
             File dbfile = new File("");
             String url = "jdbc:sqlite:" + dbfile.getAbsolutePath() + "/counting.db";
-            String selectDescOrder = "SELECT * FROM `stats` ORDER BY `amount` DESC";
+            String selectDescOrder = "SELECT * FROM `stats` ORDER BY `amount` DESC LIMIT 20";
 
             StringBuilder stringBuilder1 = new StringBuilder();
-            StringBuilder stringBuilder2 = new StringBuilder();
             EmbedBuilder eb = new EmbedBuilder();
-            //eb.setTitle("Counting Leaderboard", null);
 
-            int maxAmount = 20;
+            //int maxAmount = 20;
             int count = 0;
             int ranking = 1;
             try{
@@ -43,18 +42,15 @@ public class CountingLeaderboard extends ListenerAdapter {
 
 
                 //We loop through the database. If the userID matches, we break out of the loop
-                while(rs.next() && (count < maxAmount)){
+                while(rs.next()){
                     long userId = rs.getLong("userId");
 
-                    //When we loop, we append to a massive string that will be used later
-                    stringBuilder1.append("\n`#" + ranking++ + "` **" + rs.getInt("amount") + "** - " + (toUser(rs.getLong("userId"))).getAsMention());
-                    //stringBuilder1.append("\n" + ranking++ + ". "+ (toUser(rs.getLong("userId"))).getAsMention());
-                    //stringBuilder2.append("\n" + rs.getInt("amount"));
-                    count++;
-                    //System.out.println("Count is: " + count);
+                    //stringBuilder1.append("\n`#" + ranking++ + "` **" + rs.getInt("amount") + "** - " + (toUser(userId)).getAsMention());
+                    stringBuilder1.append("\n`#" + ranking++ + "` **" + rs.getInt("amount") + "** - " + "<@" + userId + ">");
                 }
                 rs.close();
                 conn.close();
+
             }
             catch(SQLException ev){
                 ev.printStackTrace();
@@ -63,14 +59,20 @@ public class CountingLeaderboard extends ListenerAdapter {
 
             //We take the final string and post it into the field
             eb.addField("Counting leaderboard", stringBuilder1.toString(), true);
-            //eb.addField("Amount", stringBuilder2.toString(), true);
 
             e.getChannel().sendMessageEmbeds(eb.build()).queue();
         }
     }
 
     //Some rest action bs. Needed this code for it to work
-    public User toUser(long id){
-        return jda.retrieveUserById(id).complete();
+    public User toUser(long id) {
+
+        try {
+            return jda.retrieveUserById(id).complete();
+        } catch (ErrorResponseException e) {
+            System.out.println("Error retrieving users");
+        }
+
+        return null;
     }
 }

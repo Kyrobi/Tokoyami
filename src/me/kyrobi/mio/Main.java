@@ -4,6 +4,7 @@ import me.kyrobi.mio.Auto.*;
 import me.kyrobi.mio.Commands.fun.*;
 import me.kyrobi.mio.Commands.info.*;
 import me.kyrobi.mio.Commands.info.counting.CountingInfo;
+import me.kyrobi.mio.Commands.info.counting.CountingIterator;
 import me.kyrobi.mio.Commands.info.counting.CountingLeaderboard;
 import me.kyrobi.mio.Commands.info.counting.CountingStats;
 import me.kyrobi.mio.utils.Sqlite;
@@ -113,6 +114,7 @@ public class Main {
         jda.addEventListener(new CountingInfo());
         jda.addEventListener(new CountingStats());
         jda.addEventListener(new CountingLeaderboard());
+        //jda.addEventListener(new CountingIterator());
 
         Sqlite sqlite = new Sqlite();
 
