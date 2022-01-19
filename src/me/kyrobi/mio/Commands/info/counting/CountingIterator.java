@@ -39,7 +39,7 @@ public class CountingIterator extends ListenerAdapter {
                         //If user already exists, increment their data
                         else{
                             int currentAmount = sqlite.getAmount(message.getAuthor().getIdLong());
-                            sqlite.update(message.getAuthor().getIdLong(), ++currentAmount);
+                            sqlite.update(message.getAuthor().getIdLong(), ++currentAmount, message.getAuthor().getAsTag());
                         }
                     }
             );

@@ -93,10 +93,11 @@ public class CountingMod extends ListenerAdapter {
                     System.out.println("Creating new profile for user" + e.getAuthor().getAsTag());
                     sqlite.insert(e.getAuthor().getIdLong(), 1, e.getAuthor().getAsTag());
                 }
+
                 //If user already exists, increment their data
                 else{
                     int currentAmount = sqlite.getAmount(e.getAuthor().getIdLong());
-                    sqlite.update(e.getAuthor().getIdLong(), ++currentAmount);
+                    sqlite.update(e.getAuthor().getIdLong(), ++currentAmount, e.getAuthor().getAsTag());
                 }
 
                 //Write into the file

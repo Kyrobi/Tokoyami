@@ -55,18 +55,25 @@ public class Sqlite {
     }
 
     //Updates an existing value in the database
-    public void update(long userId, int amount){
+    public void update(long userId, int amount, String discordTag){
 
         //Update the data specified by the userId
-        String updateCommand = "UPDATE stats SET amount=" +amount + " WHERE userId=" + "'" + userId + "'";
+        //String updateCommand = "UPDATE stats SET amount=" +amount + " WHERE userId=" + "'" + userId + "'";
+
 
         //System.out.println("Update command: " + updateCommand);
 
         try{
             Class.forName("org.sqlite.JDBC");
             Connection conn = DriverManager.getConnection(url);
-            PreparedStatement stmt = conn.prepareStatement(updateCommand);
-            stmt.executeUpdate();
+            //PreparedStatement stmt = conn.prepareStatement(updateCommand);
+            PreparedStatement update = conn.prepareStatement("UPDATE stats SET amount = ?, discordTag = ? WHERE userId = ?");
+
+            update.setInt(1, amount);
+            update.setString(2, discordTag);
+            update.setLong(3, userId);
+
+            update.executeUpdate();
             conn.close();
 
         }
@@ -120,8 +127,13 @@ public class Sqlite {
             //System.out.println("Connecting...");
             Class.forName("org.sqlite.JDBC");
             Connection conn = DriverManager.getConnection(url); // Make connection
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(selectfrom); // Execute the command
+            PreparedStatement getAmount = conn.prepareStatement("SELECT * FROM stats WHERE userId = ?");
+
+            getAmount.setLong(1, userId);
+
+            //Statement stmt = conn.createStatement();
+            //ResultSet rs = getAmount.executeQuery(selectfrom); // Execute the command
+            ResultSet rs = getAmount.executeQuery(); // Used with prepared statement
             amount = rs.getInt("amount");
             rs.close();
             conn.close();
