@@ -16,7 +16,8 @@ public class Sqlite {
     public void createNewTable(){
         String sql = "CREATE TABLE IF NOT EXISTS 'stats' ("
                 + " 'userId' integer PRIMARY KEY,"
-                + " 'amount' integer NOT NULL DEFAULT 0)";
+                + " 'amount' integer NOT NULL DEFAULT 0,"
+                + " 'discordTag' VARCHAR(255))";
 
         // the PRIMARY KEY uniquely defines a record
 
@@ -34,9 +35,9 @@ public class Sqlite {
     }
 
     //Insert a new value into the database
-    public void insert(long id, int amount){
+    public void insert(long id, int amount, String discordTag){
 
-        String sqlcommand = "INSERT INTO stats(userId, amount) VALUES(?,?)";
+        String sqlcommand = "INSERT INTO stats(userId, amount, discordTag) VALUES(?,?,?)";
 
         try{
             Class.forName("org.sqlite.JDBC");
@@ -44,6 +45,7 @@ public class Sqlite {
             PreparedStatement stmt = conn.prepareStatement(sqlcommand);
             stmt.setLong(1, id); // The first column will contain the ID
             stmt.setInt(2, amount); // The second column will contain the amount
+            stmt.setString(3, discordTag);
             stmt.executeUpdate();
             conn.close();
         }

@@ -34,7 +34,7 @@ public class CountingIterator extends ListenerAdapter {
                         //If the user is not in the database, we add them to it
                         if(sqlite.getCount(message.getAuthor().getIdLong()) == 0){
                             System.out.println("Creating new profile for user");
-                            sqlite.insert(message.getAuthor().getIdLong(), 1);
+                            sqlite.insert(message.getAuthor().getIdLong(), 1, message.getAuthor().getAsTag());
                         }
                         //If user already exists, increment their data
                         else{

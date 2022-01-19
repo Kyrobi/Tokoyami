@@ -102,7 +102,7 @@ public class Main {
 
 
         // Registers from class
-        jda.addEventListener(new Debug());
+        //jda.addEventListener(new Debug());
         jda.addEventListener(new CountingMod());
         jda.addEventListener(new AnnouncementReaction());
         jda.addEventListener(new ChangelogReaction());

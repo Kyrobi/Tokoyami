@@ -25,7 +25,7 @@ public class CountingMod extends ListenerAdapter {
             // Grabs the channel that we want to change settings in
             TextChannel channelInfo = e.getGuild().getTextChannelById("799121727250235392");
 
-            System.out.println("A message was sent in the counting channel");
+            System.out.println("A message was sent in the counting channel: " + e.getAuthor().getAsTag());
 
             //Read from Json
             String data = null;
@@ -90,8 +90,8 @@ public class CountingMod extends ListenerAdapter {
 
                 //If the user is not in the database, we add them to it
                 if(sqlite.getCount(e.getAuthor().getIdLong()) == 0){
-                    System.out.println("Creating new profile for user");
-                    sqlite.insert(e.getAuthor().getIdLong(), 1);
+                    System.out.println("Creating new profile for user" + e.getAuthor().getAsTag());
+                    sqlite.insert(e.getAuthor().getIdLong(), 1, e.getAuthor().getAsTag());
                 }
                 //If user already exists, increment their data
                 else{
@@ -118,7 +118,7 @@ public class CountingMod extends ListenerAdapter {
         if(e.getChannel().getIdLong() == Main.countingChannelID){
 
             // Grabs the channel that we want to change the permission in
-            TextChannel channel = e.getGuild().getTextChannelById("799121727250235392");
+            TextChannel channel = e.getGuild().getTextChannelById("459397281754513408");
 
             try{
                 channel.createPermissionOverride(e.getMember())

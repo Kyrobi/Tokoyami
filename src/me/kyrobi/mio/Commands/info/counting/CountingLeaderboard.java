@@ -27,7 +27,7 @@ public class CountingLeaderboard extends ListenerAdapter {
 
             File dbfile = new File("");
             String url = "jdbc:sqlite:" + dbfile.getAbsolutePath() + "/counting.db";
-            String selectDescOrder = "SELECT * FROM `stats` ORDER BY `amount` DESC LIMIT 20";
+            String selectDescOrder = "SELECT * FROM `stats` ORDER BY `amount` DESC LIMIT 15";
 
             StringBuilder stringBuilder1 = new StringBuilder();
             EmbedBuilder eb = new EmbedBuilder();
@@ -46,7 +46,7 @@ public class CountingLeaderboard extends ListenerAdapter {
                     long userId = rs.getLong("userId");
 
                     //stringBuilder1.append("\n`#" + ranking++ + "` **" + rs.getInt("amount") + "** - " + (toUser(userId)).getAsMention());
-                    stringBuilder1.append("\n`#" + ranking++ + "` **" + rs.getInt("amount") + "** - " + "<@" + userId + ">");
+                    stringBuilder1.append("\n`#" + ranking++ + "` **" + rs.getInt("amount") + "** - " + "<@" + userId + "> " + rs.getString("discordTag"));
                 }
                 rs.close();
                 conn.close();
@@ -58,7 +58,7 @@ public class CountingLeaderboard extends ListenerAdapter {
             }
 
             //We take the final string and post it into the field
-            eb.addField("Counting leaderboard", stringBuilder1.toString(), true);
+            eb.addField("Counting leaderboard [Top 15]", stringBuilder1.toString(), true);
 
             e.getChannel().sendMessageEmbeds(eb.build()).queue();
         }
