@@ -13,5 +13,9 @@ public class Mitty extends ListenerAdapter {
         if(args[0].equalsIgnoreCase("mitty")){
             e.getChannel().sendMessage("https://media.discordapp.net/attachments/734634926384742440/756767545473892432/MITTY.png?width=400&height=225").queue();
         }
+
+        if(args[0].equalsIgnoreCase("confused")){
+            e.getChannel().sendMessage("https://cdn.discordapp.com/attachments/845435268974116864/934996764921057300/fubuki-confused.gif").queue();
+        }
     }
 }
