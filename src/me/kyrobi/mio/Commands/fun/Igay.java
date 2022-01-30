@@ -18,6 +18,11 @@ public class Igay extends ListenerAdapter {
 
         if(args[0].equalsIgnoreCase(Main.prefix + "igay")){
 
+            if(!(e.getMessage().getChannel().getName().equals("spam"))){
+                e.getChannel().sendMessage("This command can only be used in the #spam channel!").queue();
+                return;
+            }
+
 
             //int gayPercentage = Math.floor((Math.random() * 10001));
             //Create random number 0 - 99
@@ -70,6 +75,7 @@ public class Igay extends ListenerAdapter {
                 gayPercentage = 100;
             }
             e.getChannel().sendMessage(e.getMember().getAsMention() + " is " + (String.format("%.0f", Math.floor(gayPercentage))) + "% gay. This means they are " + gayRatingMessage).queue();
+            return;
         }
     }
 }
