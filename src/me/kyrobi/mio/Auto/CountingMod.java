@@ -14,6 +14,7 @@ import java.io.*;
 import java.nio.channels.Channel;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.TimeUnit;
 
 public class CountingMod extends ListenerAdapter {
 
@@ -56,7 +57,7 @@ public class CountingMod extends ListenerAdapter {
             //Assume that if it can't convert, the message isn't right because it's not an int in the first place and then delete
             catch(NumberFormatException error){
                 System.out.println("Deleted " + e.getMessage().getContentRaw() + " from #counting" + " sent by " + e.getMember().getNickname() + " | " + e.getMember() + "\n");
-                e.getMessage().delete().queue();
+                e.getMessage().delete().queueAfter(250, TimeUnit.MILLISECONDS);
                 return;
             }
 
@@ -64,7 +65,7 @@ public class CountingMod extends ListenerAdapter {
             if(expectedValue != sent){
                 System.out.println("Deleted " + e.getMessage().getContentRaw() + " from #counting" + " sent by " + e.getMember().getNickname() + " | " + e.getMember());
                 System.out.println("Previous: " + previous + ". Expecting: " + expectedValue + ". But user sent " + sent + "\n");
-                e.getMessage().delete().queue();
+                e.getMessage().delete().queueAfter(250, TimeUnit.MILLISECONDS);
             }
 
             else{

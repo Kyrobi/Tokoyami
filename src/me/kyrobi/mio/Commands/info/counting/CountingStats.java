@@ -11,7 +11,7 @@ public class CountingStats extends ListenerAdapter {
     public void onGuildMessageReceived(GuildMessageReceivedEvent e){
         String[] args = e.getMessage().getContentRaw().split(" "); // split up every argument since every argument has a space
 
-        if((args[0].equalsIgnoreCase(Main.prefix + "counting") && args[1].equalsIgnoreCase( "stats"))) {
+        if((args[0].equalsIgnoreCase(Main.prefix + "cstats"))) {
             Sqlite sqlite = new Sqlite();
             e.getChannel().sendMessage(e.getMessage().getAuthor().getAsMention() + "'s counting contributions: " + sqlite.getAmount(e.getAuthor().getIdLong())).queue();
         }

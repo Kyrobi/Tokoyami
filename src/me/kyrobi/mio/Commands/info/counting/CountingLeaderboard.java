@@ -23,7 +23,7 @@ public class CountingLeaderboard extends ListenerAdapter {
     public void onGuildMessageReceived(GuildMessageReceivedEvent e){
         String[] args = e.getMessage().getContentRaw().split(" "); // split up every argument since every argument has a space
 
-        if((args[0].equalsIgnoreCase(Main.prefix + "counting") && args[1].equalsIgnoreCase( "leaderboard"))){
+        if((args[0].equalsIgnoreCase(Main.prefix + "cleaderboard"))){
 
             File dbfile = new File("");
             String url = "jdbc:sqlite:" + dbfile.getAbsolutePath() + "/counting.db";

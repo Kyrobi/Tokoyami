@@ -7,6 +7,7 @@ import me.kyrobi.mio.Commands.info.counting.CountingInfo;
 import me.kyrobi.mio.Commands.info.counting.CountingIterator;
 import me.kyrobi.mio.Commands.info.counting.CountingLeaderboard;
 import me.kyrobi.mio.Commands.info.counting.CountingStats;
+import me.kyrobi.mio.Commands.suggestion;
 import me.kyrobi.mio.utils.Sqlite;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -28,7 +29,7 @@ import static java.lang.System.exit;
 public class Main {
 
     public static JDA jda;
-    public static String prefix = "m!";
+    public static String prefix = "$";
 
     public static long countingChannelID;
     public static long announcementChannelID;
@@ -71,7 +72,7 @@ public class Main {
             System.out.println("Config file does not exist! Creating a new one. Please configure it");
             String configFormat = "{\n\"countingChannelID\":1234567890," +
                     "\n\"announcementChannelID\":1234567890," +
-                    "\n\"setWatchingMessage\":\"m!help | FAMS\"," +
+                    "\n\"setWatchingMessage\":\"$help | FAMS\"," +
                     "\n\"gayLordRoleID\":918397641971367977" +
                     "\n}";
 
@@ -114,6 +115,7 @@ public class Main {
         jda.addEventListener(new CountingInfo());
         jda.addEventListener(new CountingStats());
         jda.addEventListener(new CountingLeaderboard());
+        jda.addEventListener(new suggestion());
         //jda.addEventListener(new CountingIterator());
 
         Sqlite sqlite = new Sqlite();

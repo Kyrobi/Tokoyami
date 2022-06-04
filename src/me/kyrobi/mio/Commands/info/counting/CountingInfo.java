@@ -17,7 +17,7 @@ public class CountingInfo extends ListenerAdapter {
     public void onGuildMessageReceived(GuildMessageReceivedEvent e){
         String[] args = e.getMessage().getContentRaw().split(" "); // split up every argument since every argument has a space
 
-        if((args[0].equalsIgnoreCase(Main.prefix + "counting") && args[1].equalsIgnoreCase( "progress"))){
+        if((args[0].equalsIgnoreCase(Main.prefix + "cprogress"))){
 
             //Read from Json
             String data = null;
