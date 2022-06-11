@@ -1,18 +1,19 @@
 package me.kyrobi.mio;
 
+import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import me.kyrobi.mio.Auto.*;
 import me.kyrobi.mio.Commands.fun.*;
 import me.kyrobi.mio.Commands.info.*;
 import me.kyrobi.mio.Commands.info.counting.CountingInfo;
-import me.kyrobi.mio.Commands.info.counting.CountingIterator;
 import me.kyrobi.mio.Commands.info.counting.CountingLeaderboard;
 import me.kyrobi.mio.Commands.info.counting.CountingStats;
-import me.kyrobi.mio.Commands.suggestion;
+import me.kyrobi.mio.Commands.util.suggestions.suggestion;
 import me.kyrobi.mio.utils.Sqlite;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -26,7 +27,7 @@ import java.nio.file.Path;
 
 import static java.lang.System.exit;
 
-public class Main {
+public class Main extends ListenerAdapter {
 
     public static JDA jda;
     public static String prefix = "$";
@@ -101,9 +102,10 @@ public class Main {
         jda.getPresence().setActivity(Activity.watching(watchingStatus));
         jda.getPresence().setStatus(OnlineStatus.ONLINE);
 
+        EventWaiter waiter = new EventWaiter();
 
         // Registers from class
-        //jda.addEventListener(new Debug());
+        jda.addEventListener(new Debug());
         jda.addEventListener(new CountingMod());
         jda.addEventListener(new AnnouncementReaction());
         jda.addEventListener(new ChangelogReaction());
@@ -115,8 +117,10 @@ public class Main {
         jda.addEventListener(new CountingInfo());
         jda.addEventListener(new CountingStats());
         jda.addEventListener(new CountingLeaderboard());
-        jda.addEventListener(new suggestion());
+        jda.addEventListener(new suggestion(waiter));
         //jda.addEventListener(new CountingIterator());
+
+        jda.addEventListener(waiter);
 
         Sqlite sqlite = new Sqlite();
 
