@@ -27,6 +27,7 @@ public class ChannelCreator extends ListenerAdapter {
     //For some reason, hashmaps doesn't work the way I want it comes to lambda functions ... so I'm using the ordered property of ArrayList to accomplish what a hashmap does
     public static ArrayList<Long> tempVCID = new ArrayList<>(); // Keeps track of temp channels. Voice channel ID, Txt channel id
     public static ArrayList<Long> tempTXTID = new ArrayList<>();
+    public static ArrayList<Long> creatorID = new ArrayList<>();
 
     // TODO (Possibly?) Save the temp channels to an external source so that we don't lose track of which channels are temp ones upon bot restart...
 
@@ -59,6 +60,7 @@ public class ChannelCreator extends ListenerAdapter {
             .queue(voiceChannel -> {
                 guild.moveVoiceMember(e.getMember(), voiceChannel).queueAfter(500, TimeUnit.MILLISECONDS);
                 tempVCID.add(voiceChannel.getIdLong());
+                creatorID.add(e.getMember().getIdLong());
                 System.out.println("vc id" + voiceChannel.getIdLong());
             });
 
@@ -80,9 +82,21 @@ public class ChannelCreator extends ListenerAdapter {
         }
 
         //Gives permission to view temp text channel for user once they join a temp vc
-//        else{
-//            if(tempVC.containsKey(e.getMember().getIdLong()) && )
-//        }
+        else{
+            // Check if this is a temp channel
+            if(tempVCID.contains(e.getChannelJoined().getIdLong())){
+                int index = tempVCID.indexOf(e.getChannelJoined().getIdLong());
+                long tempTxtID = tempTXTID.get(index);
+
+                Guild guild = e.getGuild();
+
+                //If person doesn't already have the view channel role, add it
+                if(guild.getTextChannelById(tempTxtID).getPermissionOverride(e.getMember()) == null){
+                    guild.getTextChannelById(tempTxtID).createPermissionOverride(e.getMember()).setAllow(Permission.VIEW_CHANNEL).queue();
+                }
+
+            }
+        }
     }
 
 
@@ -93,20 +107,39 @@ public class ChannelCreator extends ListenerAdapter {
     @Override
     public void onGuildVoiceMove(GuildVoiceMoveEvent e){
 
-        int botsInVC = 0;
+        deleteChannel(e.getChannelLeft());
 
-        for(Member member:e.getChannelLeft().getMembers()){
-            if(member.getUser().isBot()){
-                ++botsInVC;
+        //If a user is leaving a temp vc
+        if(tempVCID.contains(e.getChannelLeft().getIdLong())){
+            int index = tempVCID.indexOf(e.getChannelLeft().getIdLong());
+            long tempTxtID = tempTXTID.get(index);
+
+            Guild guild = e.getGuild();
+
+            // Remove user's permission
+            // If the creator of this vc leaves
+            if(creatorID.get(index) == e.getMember().getIdLong()){
+                // Nothing
+            }
+            else{
+                //guild.getTextChannelById(tempTxtID).createPermissionOverride(e.getMember()).clear().queue();
+                guild.getTextChannelById(tempTxtID).getPermissionOverride(e.getMember()).delete().queue();
             }
         }
 
-        deleteChannel(e.getChannelLeft());
+        if(tempVCID.contains(e.getChannelJoined().getIdLong())){
+            int index = tempVCID.indexOf(e.getChannelJoined().getIdLong());
+            long tempTxtID = tempTXTID.get(index);
 
-        System.out.println("vc list:" + tempVCID);
-        System.out.println("txt list:" + tempTXTID);
+            Guild guild = e.getGuild();
+
+            //If person doesn't already have the view channel role, add it
+            if(guild.getTextChannelById(tempTxtID).getPermissionOverride(e.getMember()) == null){
+                guild.getTextChannelById(tempTxtID).createPermissionOverride(e.getMember()).setAllow(Permission.VIEW_CHANNEL).queue();
+            }
+
+        }
     }
-
 
 
     /*
@@ -114,16 +147,25 @@ public class ChannelCreator extends ListenerAdapter {
      */
     @Override
     public void onGuildVoiceLeave(GuildVoiceLeaveEvent e){
+        deleteChannel(e.getChannelLeft());
 
-        int botsInVC = 0;
+        //If a user is leaving a temp vc
+        if(tempVCID.contains(e.getChannelLeft().getIdLong())){
+            int index = tempVCID.indexOf(e.getChannelLeft().getIdLong());
+            long tempTxtID = tempTXTID.get(index);
 
-        for(Member member:e.getChannelLeft().getMembers()){
-            if(member.getUser().isBot()){
-                ++botsInVC;
+            Guild guild = e.getGuild();
+
+            // Remove user's permission
+            // If the creator of this vc leaves
+            if(creatorID.get(index) == e.getMember().getIdLong()){
+                // Nothing
+            }
+            else{
+                // Removes the user from the channel's permission
+                guild.getTextChannelById(tempTxtID).getPermissionOverride(e.getMember()).delete().queue();
             }
         }
-
-        deleteChannel(e.getChannelLeft());
     }
 
 
@@ -164,6 +206,7 @@ public class ChannelCreator extends ListenerAdapter {
             //Since arrayList is ordered, we can assume that vc channel and txt channel are in the same index
             tempVCID.remove(index);
             tempTXTID.remove(index);
+            creatorID.remove(index);
 
             vc.delete().queueAfter(500, TimeUnit.MILLISECONDS);
             txt.delete().queueAfter(500, TimeUnit.MILLISECONDS);
