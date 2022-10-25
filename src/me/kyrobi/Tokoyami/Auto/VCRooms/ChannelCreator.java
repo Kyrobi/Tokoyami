@@ -1,0 +1,172 @@
+package me.kyrobi.Tokoyami.Auto.VCRooms;
+
+
+import me.kyrobi.Tokoyami.Main;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
+
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.concurrent.TimeUnit;
+
+
+
+/*
+TODO
+1. Add permissions for channels
+2. Add commands to change channel attributes
+3. Create a text channel to type commands in
+ */
+
+public class ChannelCreator extends ListenerAdapter {
+
+    //For some reason, hashmaps doesn't work the way I want it comes to lambda functions ... so I'm using the ordered property of ArrayList to accomplish what a hashmap does
+    public static ArrayList<Long> tempVCID = new ArrayList<>(); // Keeps track of temp channels. Voice channel ID, Txt channel id
+    public static ArrayList<Long> tempTXTID = new ArrayList<>();
+
+    // TODO (Possibly?) Save the temp channels to an external source so that we don't lose track of which channels are temp ones upon bot restart...
+
+    /*
+    Triggers when a user joins the voice channel
+     */
+    @Override
+    public void onGuildVoiceJoin(GuildVoiceJoinEvent e){
+        System.out.println(e.getVoiceState().getChannel().getMembers().size());
+        if(e.getChannelJoined().getIdLong() == Main.newVCChannel){
+
+            //Reference: https://stackoverflow.com/questions/60088401/how-to-create-a-private-channel-in-a-discord-server-not-a-user-bot-dm-using-jd
+
+            Guild guild = e.getMember().getGuild();
+
+            //Category to create new voice channels under
+            Category category = e.getGuild().getCategoryById(Main.voiceChannelCategory);
+
+            if(category == null){
+                System.out.println("Category does not exist for creating voice channels!");
+            }
+
+            // This creates the actual voice channel
+            guild.createVoiceChannel(e.getMember().getEffectiveName() + "'s vc")
+                    .addPermissionOverride(e.getMember(), EnumSet.of(Permission.MANAGE_CHANNEL, Permission.MANAGE_PERMISSIONS), null)
+                    .setParent(category)
+
+            // This function returns back a voice channel object which we can use
+            // to move the user to that newly created channel
+            .queue(voiceChannel -> {
+                guild.moveVoiceMember(e.getMember(), voiceChannel).queueAfter(500, TimeUnit.MILLISECONDS);
+                tempVCID.add(voiceChannel.getIdLong());
+                System.out.println("vc id" + voiceChannel.getIdLong());
+            });
+
+            /*
+            This creates a temp text channel for type user commands
+            No one will be able to view it unless they enter the vc
+             */
+            String atEveryoneID = guild.getId();
+
+            guild.createTextChannel(e.getMember().getEffectiveName() + "'s vc")
+                    .addRolePermissionOverride(guild.getRoleById(atEveryoneID).getIdLong(), null, EnumSet.of(Permission.VIEW_CHANNEL))
+                    .addPermissionOverride(e.getMember(), EnumSet.of(Permission.VIEW_CHANNEL), null)
+                    .setParent(category)
+                    .queue(textChannel -> {
+                        tempTXTID.add(textChannel.getIdLong());
+                        System.out.println("txt id" + textChannel.getIdLong());
+                    });
+
+        }
+
+        //Gives permission to view temp text channel for user once they join a temp vc
+//        else{
+//            if(tempVC.containsKey(e.getMember().getIdLong()) && )
+//        }
+    }
+
+
+
+    /*
+    Triggers when a user moves into the channel from another voice channel
+     */
+    @Override
+    public void onGuildVoiceMove(GuildVoiceMoveEvent e){
+
+        int botsInVC = 0;
+
+        for(Member member:e.getChannelLeft().getMembers()){
+            if(member.getUser().isBot()){
+                ++botsInVC;
+            }
+        }
+
+        deleteChannel(e.getChannelLeft());
+
+        System.out.println("vc list:" + tempVCID);
+        System.out.println("txt list:" + tempTXTID);
+    }
+
+
+
+    /*
+    Triggers when a user leaves the voice channel
+     */
+    @Override
+    public void onGuildVoiceLeave(GuildVoiceLeaveEvent e){
+
+        int botsInVC = 0;
+
+        for(Member member:e.getChannelLeft().getMembers()){
+            if(member.getUser().isBot()){
+                ++botsInVC;
+            }
+        }
+
+        deleteChannel(e.getChannelLeft());
+    }
+
+
+    /*
+    Checks for deleting a channel
+     */
+    private void deleteChannel(VoiceChannel e) {
+
+        int botsInVC = 0;
+        long vcID;
+
+        vcID = e.getIdLong();
+
+
+        // Check for bots and subtract from the actual member count in the channel
+        for(Member member:e.getMembers()){
+            if(member.getUser().isBot()){
+                ++botsInVC;
+            }
+        }
+
+        int VCmemberCount = e.getMembers().size() - botsInVC;
+
+        if(VCmemberCount == 0 && tempVCID.contains(vcID)){
+            Guild guild = e.getGuild();
+            VoiceChannel vc = guild.getVoiceChannelById(vcID);
+            TextChannel txt = guild.getTextChannelById(tempTXTID.get(tempVCID.indexOf(vcID)));
+
+            // We loop through the channel to kick all the bots out or else deleting the channel is gonna have errors
+            for(Member member: e.getMembers()){
+                if(member.getUser().isBot()){
+                    guild.kickVoiceMember(member).queue();
+                }
+            }
+            // Actually delete the channel
+            int index = tempVCID.indexOf(vcID);
+
+            //Since arrayList is ordered, we can assume that vc channel and txt channel are in the same index
+            tempVCID.remove(index);
+            tempTXTID.remove(index);
+
+            vc.delete().queueAfter(500, TimeUnit.MILLISECONDS);
+            txt.delete().queueAfter(500, TimeUnit.MILLISECONDS);
+        }
+    }
+}

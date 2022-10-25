@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Mio:jar">
+    <output-path>$PROJECT_DIR$/../../..</output-path>
+    <root id="archive" name="Mio.jar">
+      <element id="module-output" name="Tokoyami" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../API/SQlite/sqlite-jdbc-3.36.0.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../API/ApacheCommons/commons-math3-3.6.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../API/jda-chewtils-2.0-SNAPSHOT.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../API/JDA/JDA-4.4.0_350-withDependencies-min.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../API/Json/json-simple-1.1.1.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
