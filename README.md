@@ -1,5 +1,5 @@
-# Mio
- Mio Discord bot for Cynagen
+# Tokoyami
+ Tokoyami Discord bot for Cynagen
  
  I can't code, so don't expect too much
  
