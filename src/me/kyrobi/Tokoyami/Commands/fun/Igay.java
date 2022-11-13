@@ -63,12 +63,12 @@ public class Igay extends ListenerAdapter {
                 gayRatingMessage = "**Very Gay**";
             }
 
-            else if (gayPercentage >= 9001 && gayPercentage <= 9997){
+            else if (gayPercentage >= 9001 && gayPercentage <= 9950){
                 gayPercentage = gayPercentage / 100;
                 gayRatingMessage = "**HELLA GAY**";
             }
 
-            else if (gayPercentage >= 9998){
+            else if (gayPercentage > 9950){
 
                 gayRatingMessage = "**Gay Lord!** (You also got the GayLord rank on Discord)";
                 e.getGuild().addRoleToMember(e.getMember(), e.getGuild().getRoleById(gayLordRoleID)).queue();

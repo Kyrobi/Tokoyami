@@ -5,6 +5,7 @@ import me.kyrobi.Tokoyami.Auto.AnnouncementReaction.AnnouncementReaction;
 import me.kyrobi.Tokoyami.Auto.ChatlogReaction.ChangelogReaction;
 import me.kyrobi.Tokoyami.Auto.CountingModeration.CountingMod;
 import me.kyrobi.Tokoyami.Auto.VCRooms.ChannelCreator;
+import me.kyrobi.Tokoyami.Auto.VCRooms.VCChanCommands;
 import me.kyrobi.Tokoyami.Commands.fun.*;
 import me.kyrobi.Tokoyami.Commands.info.*;
 import me.kyrobi.Tokoyami.Commands.info.counting.CountingInfo;
@@ -135,6 +136,8 @@ public class Main extends ListenerAdapter {
         jda.addEventListener(new CountingLeaderboard());
         jda.addEventListener(new suggestion());
         jda.addEventListener(new ChannelCreator());
+        jda.addEventListener(new VCChanCommands()
+        );
         //jda.addEventListener(new CountingIterator());
 
         jda.addEventListener(waiter);

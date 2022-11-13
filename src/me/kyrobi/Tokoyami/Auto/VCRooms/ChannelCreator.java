@@ -36,7 +36,7 @@ public class ChannelCreator extends ListenerAdapter {
      */
     @Override
     public void onGuildVoiceJoin(GuildVoiceJoinEvent e){
-        System.out.println(e.getVoiceState().getChannel().getMembers().size());
+        //System.out.println(e.getVoiceState().getChannel().getMembers().size());
         if(e.getChannelJoined().getIdLong() == Main.newVCChannel){
 
             //Reference: https://stackoverflow.com/questions/60088401/how-to-create-a-private-channel-in-a-discord-server-not-a-user-bot-dm-using-jd
@@ -52,16 +52,16 @@ public class ChannelCreator extends ListenerAdapter {
 
             // This creates the actual voice channel
             guild.createVoiceChannel(e.getMember().getEffectiveName() + "'s vc")
-                    .addPermissionOverride(e.getMember(), EnumSet.of(Permission.MANAGE_CHANNEL, Permission.MANAGE_PERMISSIONS), null)
+                    .addPermissionOverride(e.getGuild().getSelfMember(), EnumSet.of(Permission.MANAGE_CHANNEL, Permission.MANAGE_PERMISSIONS), null)
                     .setParent(category)
 
             // This function returns back a voice channel object which we can use
             // to move the user to that newly created channel
             .queue(voiceChannel -> {
                 guild.moveVoiceMember(e.getMember(), voiceChannel).queueAfter(500, TimeUnit.MILLISECONDS);
+                voiceChannel.createPermissionOverride(e.getMember()).setAllow(EnumSet.of(Permission.MANAGE_CHANNEL, Permission.MANAGE_PERMISSIONS, Permission.VIEW_CHANNEL)).queue();
                 tempVCID.add(voiceChannel.getIdLong());
                 creatorID.add(e.getMember().getIdLong());
-                System.out.println("vc id" + voiceChannel.getIdLong());
             });
 
             /*
@@ -72,11 +72,21 @@ public class ChannelCreator extends ListenerAdapter {
 
             guild.createTextChannel(e.getMember().getEffectiveName() + "'s vc")
                     .addRolePermissionOverride(guild.getRoleById(atEveryoneID).getIdLong(), null, EnumSet.of(Permission.VIEW_CHANNEL))
-                    .addPermissionOverride(e.getMember(), EnumSet.of(Permission.VIEW_CHANNEL), null)
+                    .addPermissionOverride(e.getGuild().getSelfMember(), EnumSet.of(Permission.MANAGE_CHANNEL, Permission.MANAGE_PERMISSIONS), null)
                     .setParent(category)
                     .queue(textChannel -> {
+                        textChannel.createPermissionOverride(e.getMember()).setAllow(EnumSet.of(Permission.VIEW_CHANNEL)).queue();
                         tempTXTID.add(textChannel.getIdLong());
-                        System.out.println("txt id" + textChannel.getIdLong());
+
+                        textChannel.sendMessage("""
+                                Voice Chat Commands:
+                                ----------
+                                `$vc lock` - Locks the vc so others can't join
+                                `$vc unlock` - Unlocks the vc
+                                `$vc hide` - Hides the vc from others
+                                `$vc unhide` - Unhides the vc from others
+                                `$vc limit (amount)` - Sets the user limit for the voice channel\040
+                                """).queue();
                     });
 
         }
