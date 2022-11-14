@@ -39,110 +39,19 @@ public class ChannelCreator extends ListenerAdapter {
      */
     @Override
     public void onGuildVoiceJoin(GuildVoiceJoinEvent e){
-        //System.out.println(e.getVoiceState().getChannel().getMembers().size());
-        if(e.getChannelJoined().getIdLong() == Main.newVCChannel){
-
-            //Reference: https://stackoverflow.com/questions/60088401/how-to-create-a-private-channel-in-a-discord-server-not-a-user-bot-dm-using-jd
-
-            Guild guild = e.getMember().getGuild();
-
-            //Category to create new voice channels under
-            Category category = e.getGuild().getCategoryById(Main.voiceChannelCategory);
-
-            if(category == null){
-                System.out.println("Category does not exist for creating voice channels!");
-            }
-
-            // This creates the actual voice channel
-            guild.createVoiceChannel(e.getMember().getEffectiveName() + "'s vc")
-                    .addPermissionOverride(e.getGuild().getSelfMember(), EnumSet.of(Permission.MANAGE_CHANNEL, Permission.MANAGE_PERMISSIONS, Permission.VIEW_CHANNEL), null)
-                    .setParent(category)
-
-            // This function returns back a voice channel object which we can use
-            // to move the user to that newly created channel
-            .queue(voiceChannel -> {
-                guild.moveVoiceMember(e.getMember(), voiceChannel).queueAfter(500, TimeUnit.MILLISECONDS);
-                voiceChannel.createPermissionOverride(e.getMember()).setAllow(EnumSet.of(Permission.MANAGE_CHANNEL, Permission.MANAGE_PERMISSIONS, Permission.VIEW_CHANNEL)).queue();
-                tempVCID.add(voiceChannel.getIdLong());
-                creatorID.add(e.getMember().getIdLong());
-            });
-
-            /*
-            This creates a temp text channel for type user commands
-            No one will be able to view it unless they enter the vc
-             */
-            String atEveryoneID = guild.getId();
-
-            guild.createTextChannel(e.getMember().getEffectiveName() + "'s vc")
-                    .addRolePermissionOverride(guild.getRoleById(atEveryoneID).getIdLong(), null, EnumSet.of(Permission.VIEW_CHANNEL))
-                    .addPermissionOverride(e.getGuild().getSelfMember(), EnumSet.of(Permission.MANAGE_CHANNEL, Permission.MANAGE_PERMISSIONS), null)
-                    .setParent(category)
-                    .queue(textChannel -> {
-                        textChannel.createPermissionOverride(e.getMember()).setAllow(EnumSet.of(Permission.VIEW_CHANNEL)).queue();
-                        tempTXTID.add(textChannel.getIdLong());
-
-                        Button lockButton = Button.primary("lockvc", "Lock");
-                        Button unlockButton = Button.primary("unlockvc", "Unlock");
-                        Button hideButton = Button.primary("hidevc", "Hide");
-                        Button unhideButton = Button.primary("unhidevc", "Unhide");
-                        Button saveMembersButton = Button.secondary("savemembers", "Save VC Members");
-                        Button loadMembersButton = Button.secondary("loadmembers", "Load VC Members");
-
-//                        textChannel.sendMessage("""
-//                                Voice Chat Options:
-//                                ----------
-//                                `$vc lock` - Locks the vc so others can't join
-//                                `$vc unlock` - Unlocks the vc
-//                                `$vc hide` - Hides the vc from others
-//                                `$vc unhide` - Unhides the vc from others
-//                                `$vc limit (amount)` - Sets the user limit for the voice channel\040
-//                                """).queue();
-
-                        Message message = new MessageBuilder()
-                                .append("Voice Chat Options")
-                                .setActionRows(ActionRow.of(lockButton, unlockButton, hideButton, unhideButton)
-                                        , ActionRow.of(saveMembersButton, loadMembersButton))
-                                .build();
-
-                        Message presetMessage = new MessageBuilder()
-                                .append("""
-                                        **Save Members**\s
-                                        This will save the members you have added to the vc channel so that they can be quickly added later.
-                                        """)
-                                .build();
-
-                        textChannel.sendMessage(message).queue();
-                        textChannel.sendMessage(presetMessage).queueAfter(1, TimeUnit.SECONDS);
-                    });
-
-
-        }
-
-        //Gives permission to view temp text channel for user once they join a temp vc
-        else{
-            // Check if this is a temp channel
-            if(tempVCID.contains(e.getChannelJoined().getIdLong())){
-                int index = tempVCID.indexOf(e.getChannelJoined().getIdLong());
-                long tempTxtID = tempTXTID.get(index);
-
-                Guild guild = e.getGuild();
-
-                //If person doesn't already have the view channel role, add it
-                if(guild.getTextChannelById(tempTxtID).getPermissionOverride(e.getMember()) == null){
-                    guild.getTextChannelById(tempTxtID).createPermissionOverride(e.getMember()).setAllow(Permission.VIEW_CHANNEL).queue();
-                }
-
-            }
-        }
+        createChannel(e);
     }
-
-
 
     /*
     Triggers when a user moves into the channel from another voice channel
      */
     @Override
     public void onGuildVoiceMove(GuildVoiceMoveEvent e){
+
+        if(e.getChannelJoined().getIdLong() == Main.newVCChannel){
+            createChannel(e);
+            return;
+        }
 
         deleteChannel(e.getChannelLeft());
 
@@ -247,6 +156,205 @@ public class ChannelCreator extends ListenerAdapter {
 
             vc.delete().queueAfter(500, TimeUnit.MILLISECONDS);
             txt.delete().queueAfter(500, TimeUnit.MILLISECONDS);
+        }
+    }
+
+    public void createChannel(GuildVoiceJoinEvent e){
+        //System.out.println(e.getVoiceState().getChannel().getMembers().size());
+        if(e.getChannelJoined().getIdLong() == Main.newVCChannel){
+
+            //Reference: https://stackoverflow.com/questions/60088401/how-to-create-a-private-channel-in-a-discord-server-not-a-user-bot-dm-using-jd
+
+            Guild guild = e.getMember().getGuild();
+
+            //Category to create new voice channels under
+            Category category = e.getGuild().getCategoryById(Main.voiceChannelCategory);
+
+            if(category == null){
+                System.out.println("Category does not exist for creating voice channels!");
+            }
+
+            // This creates the actual voice channel
+            guild.createVoiceChannel(e.getMember().getEffectiveName() + "'s vc")
+                    .addPermissionOverride(e.getGuild().getSelfMember(), EnumSet.of(Permission.MANAGE_CHANNEL, Permission.MANAGE_PERMISSIONS, Permission.VIEW_CHANNEL), null)
+                    .setParent(category)
+
+                    // This function returns back a voice channel object which we can use
+                    // to move the user to that newly created channel
+                    .queue(voiceChannel -> {
+                        guild.moveVoiceMember(e.getMember(), voiceChannel).queueAfter(500, TimeUnit.MILLISECONDS);
+                        voiceChannel.createPermissionOverride(e.getMember()).setAllow(EnumSet.of(Permission.MANAGE_CHANNEL, Permission.MANAGE_PERMISSIONS, Permission.VIEW_CHANNEL)).queue();
+                        tempVCID.add(voiceChannel.getIdLong());
+                        creatorID.add(e.getMember().getIdLong());
+                    });
+
+            /*
+            This creates a temp text channel for type user commands
+            No one will be able to view it unless they enter the vc
+             */
+            String atEveryoneID = guild.getId();
+
+            guild.createTextChannel(e.getMember().getEffectiveName() + "'s vc")
+                    .addRolePermissionOverride(guild.getRoleById(atEveryoneID).getIdLong(), null, EnumSet.of(Permission.VIEW_CHANNEL))
+                    .addPermissionOverride(e.getGuild().getSelfMember(), EnumSet.of(Permission.MANAGE_CHANNEL, Permission.MANAGE_PERMISSIONS), null)
+                    .setParent(category)
+                    .queue(textChannel -> {
+                        textChannel.createPermissionOverride(e.getMember()).setAllow(EnumSet.of(Permission.VIEW_CHANNEL)).queue();
+                        tempTXTID.add(textChannel.getIdLong());
+
+                        Button lockButton = Button.primary("lockvc", "Lock");
+                        Button unlockButton = Button.primary("unlockvc", "Unlock");
+                        Button hideButton = Button.primary("hidevc", "Hide");
+                        Button unhideButton = Button.primary("unhidevc", "Unhide");
+                        Button saveMembersButton = Button.secondary("savemembers", "Save VC Members");
+                        Button loadMembersButton = Button.secondary("loadmembers", "Load VC Members");
+
+//                        textChannel.sendMessage("""
+//                                Voice Chat Options:
+//                                ----------
+//                                `$vc lock` - Locks the vc so others can't join
+//                                `$vc unlock` - Unlocks the vc
+//                                `$vc hide` - Hides the vc from others
+//                                `$vc unhide` - Unhides the vc from others
+//                                `$vc limit (amount)` - Sets the user limit for the voice channel\040
+//                                """).queue();
+
+                        Message message = new MessageBuilder()
+                                .append("Voice Chat Options")
+                                .setActionRows(ActionRow.of(lockButton, unlockButton, hideButton, unhideButton)
+                                        , ActionRow.of(saveMembersButton, loadMembersButton))
+                                .build();
+
+                        Message presetMessage = new MessageBuilder()
+                                .append("""
+                                        **Save Members**\s
+                                        This will save the members you have added to the vc channel so that they can be quickly added later.
+                                        Useful for automatically setting up a private vc for you and your friends.
+                                        """)
+                                .build();
+
+                        textChannel.sendMessage(message).queue();
+                        textChannel.sendMessage(presetMessage).queueAfter(1, TimeUnit.SECONDS);
+                    });
+
+
+        }
+
+        //Gives permission to view temp text channel for user once they join a temp vc
+        else{
+            // Check if this is a temp channel
+            if(tempVCID.contains(e.getChannelJoined().getIdLong())){
+                int index = tempVCID.indexOf(e.getChannelJoined().getIdLong());
+                long tempTxtID = tempTXTID.get(index);
+
+                Guild guild = e.getGuild();
+
+                //If person doesn't already have the view channel role, add it
+                if(guild.getTextChannelById(tempTxtID).getPermissionOverride(e.getMember()) == null){
+                    guild.getTextChannelById(tempTxtID).createPermissionOverride(e.getMember()).setAllow(Permission.VIEW_CHANNEL).queue();
+                }
+
+            }
+        }
+    }
+
+
+    public void createChannel(GuildVoiceMoveEvent e){
+        //System.out.println(e.getVoiceState().getChannel().getMembers().size());
+        if(e.getChannelJoined().getIdLong() == Main.newVCChannel){
+
+            //Reference: https://stackoverflow.com/questions/60088401/how-to-create-a-private-channel-in-a-discord-server-not-a-user-bot-dm-using-jd
+
+            Guild guild = e.getMember().getGuild();
+
+            //Category to create new voice channels under
+            Category category = e.getGuild().getCategoryById(Main.voiceChannelCategory);
+
+            if(category == null){
+                System.out.println("Category does not exist for creating voice channels!");
+            }
+
+            // This creates the actual voice channel
+            guild.createVoiceChannel(e.getMember().getEffectiveName() + "'s vc")
+                    .addPermissionOverride(e.getGuild().getSelfMember(), EnumSet.of(Permission.MANAGE_CHANNEL, Permission.MANAGE_PERMISSIONS, Permission.VIEW_CHANNEL), null)
+                    .setParent(category)
+
+                    // This function returns back a voice channel object which we can use
+                    // to move the user to that newly created channel
+                    .queue(voiceChannel -> {
+                        guild.moveVoiceMember(e.getMember(), voiceChannel).queueAfter(500, TimeUnit.MILLISECONDS);
+                        voiceChannel.createPermissionOverride(e.getMember()).setAllow(EnumSet.of(Permission.MANAGE_CHANNEL, Permission.MANAGE_PERMISSIONS, Permission.VIEW_CHANNEL)).queue();
+                        tempVCID.add(voiceChannel.getIdLong());
+                        creatorID.add(e.getMember().getIdLong());
+                    });
+
+            /*
+            This creates a temp text channel for type user commands
+            No one will be able to view it unless they enter the vc
+             */
+            String atEveryoneID = guild.getId();
+
+            guild.createTextChannel(e.getMember().getEffectiveName() + "'s vc")
+                    .addRolePermissionOverride(guild.getRoleById(atEveryoneID).getIdLong(), null, EnumSet.of(Permission.VIEW_CHANNEL))
+                    .addPermissionOverride(e.getGuild().getSelfMember(), EnumSet.of(Permission.MANAGE_CHANNEL, Permission.MANAGE_PERMISSIONS), null)
+                    .setParent(category)
+                    .queue(textChannel -> {
+                        textChannel.createPermissionOverride(e.getMember()).setAllow(EnumSet.of(Permission.VIEW_CHANNEL)).queue();
+                        tempTXTID.add(textChannel.getIdLong());
+
+                        Button lockButton = Button.primary("lockvc", "Lock");
+                        Button unlockButton = Button.primary("unlockvc", "Unlock");
+                        Button hideButton = Button.primary("hidevc", "Hide");
+                        Button unhideButton = Button.primary("unhidevc", "Unhide");
+                        Button saveMembersButton = Button.secondary("savemembers", "Save VC Members");
+                        Button loadMembersButton = Button.secondary("loadmembers", "Load VC Members");
+
+//                        textChannel.sendMessage("""
+//                                Voice Chat Options:
+//                                ----------
+//                                `$vc lock` - Locks the vc so others can't join
+//                                `$vc unlock` - Unlocks the vc
+//                                `$vc hide` - Hides the vc from others
+//                                `$vc unhide` - Unhides the vc from others
+//                                `$vc limit (amount)` - Sets the user limit for the voice channel\040
+//                                """).queue();
+
+                        Message message = new MessageBuilder()
+                                .append("Voice Chat Options")
+                                .setActionRows(ActionRow.of(lockButton, unlockButton, hideButton, unhideButton)
+                                        , ActionRow.of(saveMembersButton, loadMembersButton))
+                                .build();
+
+                        Message presetMessage = new MessageBuilder()
+                                .append("""
+                                        **Save Members**\s
+                                        This will save the members you have added to the vc channel so that they can be quickly added later.
+                                        Useful for automatically setting up a private vc for you and your friends.
+                                        """)
+                                .build();
+
+                        textChannel.sendMessage(message).queue();
+                        textChannel.sendMessage(presetMessage).queueAfter(1, TimeUnit.SECONDS);
+                    });
+
+
+        }
+
+        //Gives permission to view temp text channel for user once they join a temp vc
+        else{
+            // Check if this is a temp channel
+            if(tempVCID.contains(e.getChannelJoined().getIdLong())){
+                int index = tempVCID.indexOf(e.getChannelJoined().getIdLong());
+                long tempTxtID = tempTXTID.get(index);
+
+                Guild guild = e.getGuild();
+
+                //If person doesn't already have the view channel role, add it
+                if(guild.getTextChannelById(tempTxtID).getPermissionOverride(e.getMember()) == null){
+                    guild.getTextChannelById(tempTxtID).createPermissionOverride(e.getMember()).setAllow(Permission.VIEW_CHANNEL).queue();
+                }
+
+            }
         }
     }
 }

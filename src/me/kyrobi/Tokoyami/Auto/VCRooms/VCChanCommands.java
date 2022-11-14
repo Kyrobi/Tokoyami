@@ -126,6 +126,8 @@ public class VCChanCommands extends ListenerAdapter {
     //Saving the channel's members
     private void savePreset(ButtonClickEvent e){
 
+        System.out.println(e.getMember().getEffectiveName() + " saved channel members");
+
         ArrayList<Long> userID = new ArrayList<>();
 
         VoiceChannel vc = jda.getVoiceChannelById(tempVCID.get(creatorIndex));
@@ -158,6 +160,8 @@ public class VCChanCommands extends ListenerAdapter {
     }
 
     private void loadPreset(Guild guild, ButtonClickEvent e){
+        System.out.println(e.getMember().getEffectiveName() + " loaded channel members");
+
         String[] members = SQLgetMembers(vcChannelOwnerID).split(",");
 
         VoiceChannel vc = jda.getVoiceChannelById(tempVCID.get(creatorIndex));
