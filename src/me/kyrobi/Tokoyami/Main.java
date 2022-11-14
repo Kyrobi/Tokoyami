@@ -145,7 +145,7 @@ public class Main extends ListenerAdapter {
         Sqlite sqlite = new Sqlite();
 
         // See if a database exists already. If not, create a new one
-        File tempFile = new File("counting.db");
+        File tempFile = new File("data.db");
         boolean exists = tempFile.exists();
         if(!exists){
             sqlite.createNewTable();

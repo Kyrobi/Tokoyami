@@ -2,12 +2,15 @@ package me.kyrobi.Tokoyami.Auto.VCRooms;
 
 
 import me.kyrobi.Tokoyami.Main;
+import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
+import net.dv8tion.jda.api.interactions.components.Button;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -52,7 +55,7 @@ public class ChannelCreator extends ListenerAdapter {
 
             // This creates the actual voice channel
             guild.createVoiceChannel(e.getMember().getEffectiveName() + "'s vc")
-                    .addPermissionOverride(e.getGuild().getSelfMember(), EnumSet.of(Permission.MANAGE_CHANNEL, Permission.MANAGE_PERMISSIONS), null)
+                    .addPermissionOverride(e.getGuild().getSelfMember(), EnumSet.of(Permission.MANAGE_CHANNEL, Permission.MANAGE_PERMISSIONS, Permission.VIEW_CHANNEL), null)
                     .setParent(category)
 
             // This function returns back a voice channel object which we can use
@@ -78,16 +81,40 @@ public class ChannelCreator extends ListenerAdapter {
                         textChannel.createPermissionOverride(e.getMember()).setAllow(EnumSet.of(Permission.VIEW_CHANNEL)).queue();
                         tempTXTID.add(textChannel.getIdLong());
 
-                        textChannel.sendMessage("""
-                                Voice Chat Commands:
-                                ----------
-                                `$vc lock` - Locks the vc so others can't join
-                                `$vc unlock` - Unlocks the vc
-                                `$vc hide` - Hides the vc from others
-                                `$vc unhide` - Unhides the vc from others
-                                `$vc limit (amount)` - Sets the user limit for the voice channel\040
-                                """).queue();
+                        Button lockButton = Button.primary("lockvc", "Lock");
+                        Button unlockButton = Button.primary("unlockvc", "Unlock");
+                        Button hideButton = Button.primary("hidevc", "Hide");
+                        Button unhideButton = Button.primary("unhidevc", "Unhide");
+                        Button saveMembersButton = Button.secondary("savemembers", "Save VC Members");
+                        Button loadMembersButton = Button.secondary("loadmembers", "Load VC Members");
+
+//                        textChannel.sendMessage("""
+//                                Voice Chat Options:
+//                                ----------
+//                                `$vc lock` - Locks the vc so others can't join
+//                                `$vc unlock` - Unlocks the vc
+//                                `$vc hide` - Hides the vc from others
+//                                `$vc unhide` - Unhides the vc from others
+//                                `$vc limit (amount)` - Sets the user limit for the voice channel\040
+//                                """).queue();
+
+                        Message message = new MessageBuilder()
+                                .append("Voice Chat Options")
+                                .setActionRows(ActionRow.of(lockButton, unlockButton, hideButton, unhideButton)
+                                        , ActionRow.of(saveMembersButton, loadMembersButton))
+                                .build();
+
+                        Message presetMessage = new MessageBuilder()
+                                .append("""
+                                        **Save Members**\s
+                                        This will save the members you have added to the vc channel so that they can be quickly added later.
+                                        """)
+                                .build();
+
+                        textChannel.sendMessage(message).queue();
+                        textChannel.sendMessage(presetMessage).queueAfter(1, TimeUnit.SECONDS);
                     });
+
 
         }
 

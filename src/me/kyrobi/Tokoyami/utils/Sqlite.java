@@ -9,7 +9,7 @@ public class Sqlite {
     File dbfile = new File("");
     //String url = "jdbc:sqlite:" + dbfile.getAbsolutePath() + "/counting.db";
 
-    String url = "jdbc:sqlite:" + dbfile.getAbsolutePath() + "/counting.db"; // For linux to work
+    String url = "jdbc:sqlite:" + dbfile.getAbsolutePath() + "/data.db"; // For linux to work
     //String url = "jdbc:sqlite:/home/kyrobi/Bot/Mio/counting.db";
 
     // This function will create a new database if one doesn't exist
@@ -26,6 +26,26 @@ public class Sqlite {
             Connection conn = DriverManager.getConnection(url); //Tries to open the connection
             Statement stmt = conn.createStatement(); // Formulate the command to execute
             stmt.execute(sql);  //Execute said command
+        }
+        catch (SQLException | ClassNotFoundException error){
+            System.out.println(error.getMessage());
+        }
+
+        System.out.println("Database does not exist. Creating a new one!");
+
+
+        // Creates a table for Discord VC Presets
+        String createVCpreset = "CREATE TABLE IF NOT EXISTS 'vcmembers' ("
+                + " 'userID' integer PRIMARY KEY,"
+                + " 'members' MEDIUMTEXT)";
+
+        // the PRIMARY KEY uniquely defines a record
+
+        try{
+            Class.forName("org.sqlite.JDBC");
+            Connection conn = DriverManager.getConnection(url); //Tries to open the connection
+            Statement stmt = conn.createStatement(); // Formulate the command to execute
+            stmt.execute(createVCpreset);  //Execute said command
         }
         catch (SQLException | ClassNotFoundException error){
             System.out.println(error.getMessage());
