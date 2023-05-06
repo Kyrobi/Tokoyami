@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>groupId</groupId>
+    <artifactId>Tokoyami</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+
+    <repositories>
+        <!-- Chew's Maven Repo for JDA-Chewtils -->
+        <repository>
+            <id>chew</id>
+            <name>m2-chew</name>
+            <url>https://m2.chew.pro/releases</url>
+        </repository>
+        <!-- JDA repo to get JDA -->
+        <repository>
+            <id>dv8tion</id>
+            <name>m2-dv8tion</name>
+            <url>https://m2.dv8tion.net/releases</url>
+        </repository>
+    </repositories>
+
+
+
+    <dependencies>
+        <dependency>
+            <groupId>pw.chew</groupId>
+            <artifactId>jda-chewtils</artifactId>
+            <version>1.24.1</version>
+            <scope>compile</scope>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>net.dv8tion</groupId>
+            <artifactId>JDA</artifactId>
+            <version>5.0.0-beta.9</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.10.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.4</version>
+                <configuration>
+                    <transformers>
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                            <mainClass>YourMainClass</mainClass> <!-- You have to replace this with a path to your main class like my.path.Main -->
+                        </transformer>
+                    </transformers>
+                    <createDependencyReducedPom>false</createDependencyReducedPom>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>11</source>
+                    <target>11</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    
+</project>
