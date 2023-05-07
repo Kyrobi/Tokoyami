@@ -4,6 +4,7 @@ import me.kyrobi.Tokoyami.Main;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.emoji.CustomEmoji;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -16,11 +17,17 @@ public class AnnouncementReaction extends ListenerAdapter {
         if(e.getChannel().getIdLong() == Main.announcementChannelID){
             // e.getMessage().addReaction("AyameF:917176926924337262").queue(); //Use this to send custom emotes
 
-            CustomEmoji thumbsUp = e.getJDA().getEmojiById("588622628751802382");
-            CustomEmoji thumbsDown = e.getJDA().getEmojiById("588622628751802382");
+//            Emoji thumbsUp = e.getJDA().getEmojiById("588622628751802382");
+//            Emoji thumbsDown = e.getJDA().getEmojiById("588622628751802382");
 
-            e.getMessage().addReaction(thumbsUp).queue();
-            e.getMessage().addReaction(thumbsDown).queue();
+//            long thumbsUpId = 0x1f44dL;
+//            long thumbsDownId = 0x1f44eL;
+
+//            Emoji thumbsUp = e.getJDA().getEmojiById("U+1F44D");
+//            Emoji thumbsDown = e.getJDA().getEmojiById("U+1F44E");
+
+            e.getMessage().addReaction(Emoji.fromUnicode("U+1F44D")).queue();
+            e.getMessage().addReaction(Emoji.fromUnicode("U+1F44E")).queue();
         }
 
         // Ping the staffs in player-report channel
