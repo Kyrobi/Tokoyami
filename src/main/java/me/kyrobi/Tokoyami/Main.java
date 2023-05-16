@@ -10,6 +10,7 @@ import me.kyrobi.Tokoyami.Commands.info.*;
 import me.kyrobi.Tokoyami.Commands.info.counting.CountingInfo;
 import me.kyrobi.Tokoyami.Commands.info.counting.CountingLeaderboard;
 import me.kyrobi.Tokoyami.Commands.info.counting.CountingStats;
+import me.kyrobi.Tokoyami.Commands.quote;
 import me.kyrobi.Tokoyami.Commands.util.suggestions.suggestion;
 import me.kyrobi.Tokoyami.utils.Sqlite;
 import net.dv8tion.jda.api.JDA;
@@ -28,6 +29,8 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import static java.lang.System.exit;
 
@@ -43,6 +46,7 @@ public class Main extends ListenerAdapter {
     public static long newVCChannel;
     public static long voiceChannelCategory;
     public static ArrayList<String> bannedCountingUsers = new ArrayList<>();
+    public static Map<Long, Long> userQuoteTimer = new HashMap<>();
 
 
     public static void main(String[] args) throws LoginException, IOException {
@@ -74,6 +78,7 @@ public class Main extends ListenerAdapter {
                             new CountingStats(),
                             new CountingLeaderboard(),
                             new suggestion(),
+                            new quote(),
                             new ModalListener()
                             )
                     .build();
@@ -148,6 +153,7 @@ public class Main extends ListenerAdapter {
         // Using slash commands
 //        jda.addEventListener(new suggestion());
         jda.upsertCommand("suggest", "Make a suggestion").queue();
+        jda.upsertCommand("quote", "Make a quote").queue();
 
 //        jda.addEventListener(new ModalListener());
 
