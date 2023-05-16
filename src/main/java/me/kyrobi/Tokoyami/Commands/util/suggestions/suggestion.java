@@ -20,30 +20,31 @@ public class suggestion extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent e){
 
+        if(e.getName().equals("suggestion")){
+            TextInput summary = TextInput.create("suggestion-summary", "summary", TextInputStyle.SHORT)
+                    .setMinLength(20)
+                    .setRequired(true)
+                    .setPlaceholder("What is your suggestion?")
+                    .build();
 
-        TextInput summary = TextInput.create("suggestion-summary", "summary", TextInputStyle.SHORT)
-                .setMinLength(20)
-                .setRequired(true)
-                .setPlaceholder("What is your suggestion?")
-                .build();
+            TextInput description = TextInput.create("suggestion-description", "This is a good idea because:", TextInputStyle.PARAGRAPH)
+                    .setMinLength(150)
+                    .setRequired(true)
+                    .setPlaceholder("Give a description on why your suggestion should be implemented")
+                    .build();
 
-        TextInput description = TextInput.create("suggestion-description", "This is a good idea because:", TextInputStyle.PARAGRAPH)
-                .setMinLength(150)
-                .setRequired(true)
-                .setPlaceholder("Give a description on why your suggestion should be implemented")
-                .build();
-
-        TextInput description_against = TextInput.create("suggestion-description-against", "This might not be a good idea because:", TextInputStyle.PARAGRAPH)
-                .setMinLength(150)
-                .setRequired(true)
-                .setPlaceholder("Give an opposing description on why your suggestion should NOT be implement")
-                .build();
+            TextInput description_against = TextInput.create("suggestion-description-against", "This might not be a good idea because:", TextInputStyle.PARAGRAPH)
+                    .setMinLength(150)
+                    .setRequired(true)
+                    .setPlaceholder("Give an opposing description on why your suggestion should NOT be implement")
+                    .build();
 
 
-        Modal modal = Modal.create("suggestion-modal", "Suggestion")
-                .addActionRows(ActionRow.of(summary), ActionRow.of(description), ActionRow.of(description_against))
-                .build();
+            Modal modal = Modal.create("suggestion-modal", "Suggestion")
+                    .addActionRows(ActionRow.of(summary), ActionRow.of(description), ActionRow.of(description_against))
+                    .build();
 
-        e.replyModal(modal).queue();
+            e.replyModal(modal).queue();
+        }
     }
 }

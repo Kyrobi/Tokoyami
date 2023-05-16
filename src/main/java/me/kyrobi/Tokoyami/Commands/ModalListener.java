@@ -15,6 +15,8 @@ import static me.kyrobi.Tokoyami.Main.jda;
 
 public class ModalListener extends ListenerAdapter {
 
+
+
     @Override
     public void onModalInteraction(ModalInteractionEvent e){
 
@@ -59,6 +61,24 @@ public class ModalListener extends ListenerAdapter {
             e.reply("Suggestion made!").queue();
         }
 
+
+        if(e.getModalId().equals("quote-modal")){
+
+            String quote = e.getValue("quote-string").getAsString();
+            String author = e.getValue("quote-author").getAsString();
+
+            TextChannel textChannel = jda.getChannelById(TextChannel.class, 434930464604553218L);
+
+            StringBuilder messageText = new StringBuilder();
+
+            messageText.append("Submitted by **" + e.getMember().getEffectiveName() + "**\n\n");
+            messageText.append("```\"" + quote + "\"```" + " - " + author);
+
+            textChannel.sendMessage(messageText.toString()).queue();
+
+
+            e.reply("Quote submitted!").queue();
+        }
 
     }
 
