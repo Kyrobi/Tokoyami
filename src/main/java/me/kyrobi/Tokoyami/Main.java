@@ -1,9 +1,7 @@
 package me.kyrobi.Tokoyami;
 
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
-import me.kyrobi.Tokoyami.Auto.AnnouncementReaction;
-import me.kyrobi.Tokoyami.Auto.ChangelogReaction;
-import me.kyrobi.Tokoyami.Auto.CountingMod;
+import me.kyrobi.Tokoyami.Auto.*;
 import me.kyrobi.Tokoyami.Commands.ModalListener;
 import me.kyrobi.Tokoyami.Commands.fun.*;
 import me.kyrobi.Tokoyami.Commands.info.*;
@@ -28,11 +26,10 @@ import javax.security.auth.login.LoginException;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static java.lang.System.exit;
+import static me.kyrobi.Tokoyami.Auto.CountingMod.messageCache;
 
 public class Main extends ListenerAdapter {
 
@@ -81,7 +78,7 @@ public class Main extends ListenerAdapter {
                             new quote(),
                             new ModalListener()
                             )
-                    .build();
+                    .build().awaitReady();
         }
         catch (IOException | IllegalArgumentException e){
             System.out.println("Cannot open token file! Making a new one. Please configure it");
@@ -90,6 +87,8 @@ public class Main extends ListenerAdapter {
             writer.print("1234567890123456");
             writer.close();
             exit(1);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
 
         //Reading config file
@@ -136,6 +135,8 @@ public class Main extends ListenerAdapter {
 
         jda.getPresence().setActivity(Activity.watching(watchingStatus));
         jda.getPresence().setStatus(OnlineStatus.ONLINE);
+
+        jda.addEventListener(new RemoveLinks(jda));
 
 
         // Registers from class
