@@ -11,6 +11,7 @@ import org.w3c.dom.Text;
 
 import java.awt.*;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import static me.kyrobi.Tokoyami.Main.jda;
 
@@ -56,9 +57,9 @@ public class ModalListener extends ListenerAdapter {
             TextChannel textChannel = jda.getChannelById(TextChannel.class, 591165674848780289L);
 
             textChannel.sendMessageEmbeds(eb.build()).queue(message -> {
-                message.addReaction(yesReaction).queue();
-                message.addReaction(neutralReaction).queue();
-                message.addReaction(noReaction).queue();
+                message.addReaction(yesReaction).queueAfter(500, TimeUnit.MILLISECONDS);
+                message.addReaction(neutralReaction).queueAfter(1000, TimeUnit.MILLISECONDS);
+                message.addReaction(noReaction).queueAfter(1500, TimeUnit.MILLISECONDS);
             });
 
             TextChannel suggestionLog = jda.getChannelById(TextChannel.class, 1134694989071401091L);

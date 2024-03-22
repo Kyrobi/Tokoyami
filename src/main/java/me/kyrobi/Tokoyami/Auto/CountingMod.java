@@ -17,6 +17,8 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static me.kyrobi.Tokoyami.Main.bannedCountingUsers;
@@ -25,6 +27,23 @@ import static me.kyrobi.Tokoyami.Main.jda;
 public class CountingMod extends ListenerAdapter {
 
     public static HashMap<Long, UserMessageObject> messageCache = new HashMap<>();
+
+    public CountingMod(){
+
+//        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+//
+//        // Define your code snippet as a Runnable
+//        Runnable codeToRun = new Runnable() {
+//            @Override
+//            public void run() {
+//                TextChannel channel = jda.getTextChannelById("459397281754513408");
+//                channel.sendMessage("100000").queue();
+//            }
+//        };
+//
+//        // Schedule the execution after 5 seconds
+//        executor.schedule(codeToRun, 5, TimeUnit.SECONDS);
+    }
 
     @Override
     public void onMessageReceived(MessageReceivedEvent e){
@@ -39,10 +58,11 @@ public class CountingMod extends ListenerAdapter {
 
             TextChannel channelInfo = e.getGuild().getTextChannelById("799121727250235392");
 
-            logMessage(
-                    "A message was sent in the counting channel: " + e.getAuthor().getAsTag() + "\n" +
-                            "Sent: `" + e.getMessage().getContentRaw() + "`"
-            );
+//            logMessage(
+//                    "A message was sent in the counting channel: " + e.getAuthor().getAsTag() + "\n" +
+//                            "Sent: `" + e.getMessage().getContentRaw() + "`"
+//            );
+            logMessage(e.getMember().getEffectiveName()  + " (" + e.getMember().getIdLong() + ")\nsent: " + e.getMessage().getContentRaw());
 
             if(bannedCountingUsers.contains(String.valueOf(e.getAuthor().getIdLong()))){
                 e.getMessage().delete().queueAfter(100, TimeUnit.MILLISECONDS);
@@ -118,6 +138,10 @@ public class CountingMod extends ListenerAdapter {
                 //SQLite stuff
                 Sqlite sqlite = new Sqlite();
 
+                if((sent + 1) % 100_000 == 0){
+                    e.getChannel().sendMessage(Integer.toString(sent+1)).queue();
+                }
+
                 //If the user is not in the database, we add them to it
                 if(sqlite.getCount(e.getAuthor().getIdLong()) == 0){
                    logMessage("Creating new profile for user" + e.getAuthor().getAsTag());
@@ -192,6 +216,9 @@ public class CountingMod extends ListenerAdapter {
                                 + "New message: `" + newMessageContent + "`\n"
                 ).queue();
             });
+
+            e.getMessage().delete().queueAfter(200, TimeUnit.MILLISECONDS);
+            e.getMember().ban(1, TimeUnit.HOURS);
 
 //            // Grabs the channel that we want to change the permission in
 //            TextChannel channel = e.getGuild().getTextChannelById("459397281754513408");

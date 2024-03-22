@@ -8,6 +8,8 @@ import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
+import java.util.concurrent.TimeUnit;
+
 import static me.kyrobi.Tokoyami.Main.jda;
 
 public class AnnouncementReaction extends ListenerAdapter {
@@ -26,8 +28,8 @@ public class AnnouncementReaction extends ListenerAdapter {
 //            Emoji thumbsUp = e.getJDA().getEmojiById("U+1F44D");
 //            Emoji thumbsDown = e.getJDA().getEmojiById("U+1F44E");
 
-            e.getMessage().addReaction(Emoji.fromUnicode("U+1F44D")).queue();
-            e.getMessage().addReaction(Emoji.fromUnicode("U+1F44E")).queue();
+            e.getMessage().addReaction(Emoji.fromUnicode("U+1F44D")).queueAfter(1000, TimeUnit.MILLISECONDS);
+            e.getMessage().addReaction(Emoji.fromUnicode("U+1F44E")).queueAfter(1000, TimeUnit.MILLISECONDS);
         }
 
         // Ping the staffs in player-report channel

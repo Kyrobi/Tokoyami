@@ -22,6 +22,8 @@ public class suggestion extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent e){
 
+        System.out.println("SUGGEST");
+
         if(e.getName().equals("suggest")){
             System.out.println("Suggestion command");
             TextInput summary = TextInput.create("suggestion-summary", "summary", TextInputStyle.SHORT)

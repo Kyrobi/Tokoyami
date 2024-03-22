@@ -137,6 +137,7 @@ public class Main extends ListenerAdapter {
         jda.getPresence().setStatus(OnlineStatus.ONLINE);
 
         jda.addEventListener(new RemoveLinks(jda));
+        jda.addEventListener(new ForwardMessage(jda));
 
 
         // Registers from class

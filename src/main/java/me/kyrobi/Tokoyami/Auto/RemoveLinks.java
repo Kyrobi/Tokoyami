@@ -64,7 +64,7 @@ public class RemoveLinks extends ListenerAdapter {
         Message message = e.getMessage();
 
         if(isURL(message.getContentRaw())){
-            int timeOutInMinutes = 5;
+            int timeOutInMinutes = 10;
             message.delete().queueAfter(200, TimeUnit.MILLISECONDS); // Delete the message
             TextChannel channel = message.getChannel().asTextChannel();
             channel.sendMessage(member.getAsMention() + " You need to have either:\n" +
