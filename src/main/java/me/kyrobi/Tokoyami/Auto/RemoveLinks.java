@@ -66,14 +66,22 @@ public class RemoveLinks extends ListenerAdapter {
         if(isURL(message.getContentRaw())){
             int timeOutInMinutes = 10;
             message.delete().queueAfter(200, TimeUnit.MILLISECONDS); // Delete the message
-            TextChannel channel = message.getChannel().asTextChannel();
-            channel.sendMessage(member.getAsMention() + " You need to have either:\n" +
-                    "1. VIP role or\n" +
-                    "2. Level 10 from chatting\n" +
-                    "to be able to send links\n\n" +
-                    "You've been temporarily timed out for " + timeOutInMinutes + " minutes."
-            ).queue();
+//            TextChannel channel = message.getChannel().asTextChannel();
+//            channel.sendMessage(member.getAsMention() + " You need to have either:\n" +
+//                    "1. VIP role or\n" +
+//                    "2. Level 10 from chatting\n" +
+//                    "to be able to send links\n\n" +
+//                    "You've been temporarily timed out for " + timeOutInMinutes + " minutes."
+//            ).queue();
+
             member.timeoutFor(timeOutInMinutes, TimeUnit.MINUTES).queue();
+            member.getUser().openPrivateChannel().queue(privateChannel -> {
+                privateChannel.sendMessage(member.getAsMention() + " You need to have either:\n" +
+                        "1. VIP role or\n" +
+                        "2. Level 10 from chatting\n" +
+                        "to be able to send links\n\n" +
+                        "You've been temporarily timed out for " + timeOutInMinutes + " minutes.").queue();
+            });
         }
     }
 
