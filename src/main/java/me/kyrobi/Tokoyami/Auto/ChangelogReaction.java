@@ -6,6 +6,8 @@ import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
+import java.util.concurrent.TimeUnit;
+
 public class ChangelogReaction extends ListenerAdapter {
 
     @Override
@@ -17,8 +19,8 @@ public class ChangelogReaction extends ListenerAdapter {
 //            Emoji thumbsUp = e.getJDA().getEmojiById("\uD83D\uDC4D");
 //            Emoji thumbsDown = e.getJDA().getEmojiById("\uD83D\uDC4E");
 
-            e.getMessage().addReaction(Emoji.fromUnicode("U+1F44D")).queue();
-            e.getMessage().addReaction(Emoji.fromUnicode("U+1F44E")).queue();
+            e.getMessage().addReaction(Emoji.fromUnicode("U+1F44D")).queueAfter(1000, TimeUnit.MILLISECONDS);
+            e.getMessage().addReaction(Emoji.fromUnicode("U+1F44E")).queueAfter(1000, TimeUnit.MILLISECONDS);
         }
     }
 }
