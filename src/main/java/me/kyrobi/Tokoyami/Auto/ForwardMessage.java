@@ -13,14 +13,15 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.concurrent.CompletableFuture;
 
 public class ForwardMessage extends ListenerAdapter {
 
-    TextChannel destinationTextChannel;
+    TextChannel destinationChannel;
 
     public ForwardMessage(JDA jda){
         Guild guild = jda.getGuildById("415873891857203212");
-        destinationTextChannel = guild.getTextChannelById("1220499636477890652");
+        destinationChannel = guild.getTextChannelById("1220499636477890652");
     }
 
     @Override
@@ -47,69 +48,75 @@ public class ForwardMessage extends ListenerAdapter {
         // Check if the message contains any attachments (e.g., pictures, videos)
         if (!event.getMessage().getAttachments().isEmpty()) {
             event.getMessage().getAttachments().forEach(attachment -> {
-                try {
-                    // Download the attachment
-                    URL url = new URL(attachment.getUrl());
-                    try (InputStream in = url.openStream()) {
-                        Path tempFile = Files.createTempFile("attachment", attachment.getFileExtension());
-                        Files.copy(in, tempFile, StandardCopyOption.REPLACE_EXISTING);
+                CompletableFuture.runAsync(() -> {
+                    try {
+                        // Download the attachment
+                        URL url = new URL(attachment.getUrl());
+                        try (InputStream in = url.openStream()) {
+                            Path tempFile = Files.createTempFile("attachment", attachment.getFileExtension());
+                            Files.copy(in, tempFile, StandardCopyOption.REPLACE_EXISTING);
 
-                        // Reupload the file
-                        destinationTextChannel.sendMessage("**" + channelName + " | " + senderName + "**:")
-                                .addFiles(net.dv8tion.jda.api.utils.FileUpload.fromData(tempFile.toFile(), attachment.getFileName()))
-                                .queue();
+                            // Reupload the file
+                            destinationChannel.sendMessage("**" + channelName + " | " + senderName + "**:")
+                                    .addFiles(net.dv8tion.jda.api.utils.FileUpload.fromData(tempFile.toFile(), attachment.getFileName()))
+                                    .queue();
 
-                        // Delete the temporary file
-                        Files.delete(tempFile);
+                            // Delete the temporary file
+                            Files.delete(tempFile);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                });
             });
         }
 
         // Check if the message has content (excluding attachments)
         if (!content.isEmpty()) {
             // Forward the message content to the destination channel
-            destinationTextChannel.sendMessage("**" + channelName + " | "+ senderName + "**: `" + content + "`").queue();
+            destinationChannel.sendMessage("**" + channelName + " | "+ senderName + "**: `" + content + "`").queue();
         }
 
         // Check if the message contains stickers
         event.getMessage().getStickers().forEach(sticker -> {
-            try {
-                URL url = new URL(sticker.getIconUrl());
-                try (InputStream in = url.openStream()) {
-                    Path tempFile = Files.createTempFile("sticker", ".png");
-                    Files.copy(in, tempFile, StandardCopyOption.REPLACE_EXISTING);
+            CompletableFuture.runAsync(() -> {
+                try {
+                    URL url = new URL(sticker.getIconUrl());
+                    try (InputStream in = url.openStream()) {
+                        Path tempFile = Files.createTempFile("sticker", ".png");
+                        Files.copy(in, tempFile, StandardCopyOption.REPLACE_EXISTING);
 
-                    destinationTextChannel.sendMessage("**" + channelName + " | " + senderName + "**:")
-                            .addFiles(net.dv8tion.jda.api.utils.FileUpload.fromData(tempFile.toFile(), sticker.getName() + ".png"))
-                            .queue();
+                        destinationChannel.sendMessage("**" + channelName + " | " + senderName + "**:")
+                                .addFiles(net.dv8tion.jda.api.utils.FileUpload.fromData(tempFile.toFile(), sticker.getName() + ".png"))
+                                .queue();
 
-                    Files.delete(tempFile);
+                        Files.delete(tempFile);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            });
         });
 
         // Check if the message contains emojis
         event.getMessage().getMentions().getCustomEmojis().forEach(emoji -> {
-            try {
-                URL url = new URL(emoji.getImageUrl());
-                try (InputStream in = url.openStream()) {
-                    Path tempFile = Files.createTempFile("emoji", ".png");
-                    Files.copy(in, tempFile, StandardCopyOption.REPLACE_EXISTING);
+            CompletableFuture.runAsync(() -> {
+                try {
+                    URL url = new URL(emoji.getImageUrl());
+                    try (InputStream in = url.openStream()) {
+                        Path tempFile = Files.createTempFile("emoji", ".png");
+                        Files.copy(in, tempFile, StandardCopyOption.REPLACE_EXISTING);
 
-                    destinationTextChannel.sendMessage("**" + channelName + " | " + senderName + "**:")
-                            .addFiles(net.dv8tion.jda.api.utils.FileUpload.fromData(tempFile.toFile(), emoji.getName() + ".png"))
-                            .queue();
+                        destinationChannel.sendMessage("**" + channelName + " | " + senderName + "**:")
+                                .addFiles(net.dv8tion.jda.api.utils.FileUpload.fromData(tempFile.toFile(), emoji.getName() + ".png"))
+                                .queue();
 
-                    Files.delete(tempFile);
+                        Files.delete(tempFile);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            });
         });
     }
 }
