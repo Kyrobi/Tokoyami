@@ -1,12 +1,15 @@
 package me.kyrobi.Tokoyami.Commands;
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.text.TextInput;
 import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
 import net.dv8tion.jda.api.interactions.modals.Modal;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.concurrent.TimeUnit;
 
 import static me.kyrobi.Tokoyami.Main.userQuoteTimer;
 
@@ -19,6 +22,7 @@ public class quote extends ListenerAdapter {
 
 
         if(e.getName().equals("quote")){
+            System.out.println("Quote command");
 
             // If user in the list, check their last time
             if(userQuoteTimer.containsKey(e.getMember().getIdLong())){
@@ -57,5 +61,25 @@ public class quote extends ListenerAdapter {
 
             e.replyModal(modal).queue();
         }
+    }
+
+
+    @Override
+    public void onMessageReceived(MessageReceivedEvent e){
+
+        if(!(e.getChannel().getIdLong() == 434930464604553218L)){
+            return;
+        }
+
+        // Delete the message if the bot didn't send it
+        if(!e.getAuthor().isBot() || !(e.getAuthor().getIdLong() == 916819753908187147L)){
+            e.getMessage().delete().queueAfter(100, TimeUnit.MILLISECONDS);
+
+            e.getAuthor().openPrivateChannel().queue(privateChannel -> {
+                privateChannel.sendMessage("Please use `/quote` on the server to submit quotes").queue();
+            });
+        }
+
+        return;
     }
 }

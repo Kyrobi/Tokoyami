@@ -9,8 +9,5 @@
         <module name="Tokoyami" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="Tokoyami" target="11" />
-    </bytecodeTargetLevel>
   </component>
 </project>
