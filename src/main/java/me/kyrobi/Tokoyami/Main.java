@@ -138,6 +138,7 @@ public class Main extends ListenerAdapter {
 
         jda.addEventListener(new RemoveLinks(jda));
         jda.addEventListener(new ForwardMessage(jda));
+        jda.addEventListener(new PictureChannelModeration());
 
 
         // Registers from class
